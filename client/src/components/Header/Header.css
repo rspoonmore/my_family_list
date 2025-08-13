@@ -1,0 +1,8 @@
+.header {
+    background-color: green;
+    display: flex;
+    justify-content: space-between;
+
+    padding: 5px;
+    max-height: 40px;
+}

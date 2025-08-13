@@ -1,0 +1,17 @@
+.pop-up {
+    gap: 5px;
+    align-items: center;
+    max-width: 300px;
+}
+
+.form-login {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+#form-login-btns {
+    display: flex;
+    justify-content: space-between;
+    margin: 5px;
+}
