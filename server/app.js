@@ -9,7 +9,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 // Setup API permissions 
-const allowedOrigins = ['http://localhost:3000']
+const allowedOrigins = ['http://localhost:3000', 'http://localhost:5173']
 app.use((req, res, next) => {
     const origin = req.headers.origin;
     if(allowedOrigins.includes(origin)) {
