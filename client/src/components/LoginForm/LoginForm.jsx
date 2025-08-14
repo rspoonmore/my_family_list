@@ -5,6 +5,7 @@ import { AuthContext } from '../../context/AuthContext'
 const LoginForm = ({className, setShowLoginForm}) => {
     const blankForm = {'email': '', 'password': ''};
     const [formData, setFormData] = useState(blankForm);
+    const apiUrl = import.meta.env.VITE_API_URL;
     const [outcome, setOutcome] = useState(null);
     const { setCurrentUser } = useContext(AuthContext);
 
@@ -17,15 +18,37 @@ const LoginForm = ({className, setShowLoginForm}) => {
 
     const login = async (e) => {
         e.preventDefault();
-        console.log('Logging in');
+        console.log(`Logging in at ${apiUrl}`);
         try {
+            // Save form data in body of request
             const data = new FormData();
             for(const key in formData) {
                 data[key] = formData[key];
             }
             
-            console.log(data);
-            hideLogin();
+            // post login
+            await fetch(`${apiUrl}/users/login`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include',
+                body: JSON.stringify(data)
+            })
+            .then(res => res.json())
+            .then(res => {
+                // login successful
+                if(res.success) {
+                    setCurrentUser(res.user);
+                    hideLogin();
+                }
+                // login was not successful
+                else {
+                    // TODO: Outcome set
+                    console.log(res.message);
+                }
+            })
+            
         } catch(error) {
             console.log(error)
         }
