@@ -6,3 +6,16 @@
     padding: 5px;
     max-height: 40px;
 }
+
+#header-link-div {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+
+    gap: 5px;
+}
+
+.header-link {
+    color: white;
+    text-decoration: underline;
+}

@@ -48,7 +48,8 @@ const Header = () => {
     return (
         <div className='header'>
             <div id='header-link-div'>
-                <Link to='/'>Home</Link>
+                <Link to='/' className='header-link'>Home</Link>
+                <Link to='/register' className='header-link'>Register</Link>
             </div>
             <div id='header-button-div'>
                 {currentUser ? logoutButton() : loginButton()}
