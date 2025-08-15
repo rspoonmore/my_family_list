@@ -9,6 +9,13 @@ const LoginForm = ({className, setShowLoginForm}) => {
     const [outcome, setOutcome] = useState(null);
     const { setCurrentUser } = useContext(AuthContext);
 
+    const LoginErrors = () => {
+        if(!outcome) {return <></>}
+        if(outcome.success) {return <></>}
+        if(!outcome.message) {return <></>}
+        return <div className='error-simple'>{outcome.message}</div>
+    }
+
     function hideLogin() {
         setFormData(blankForm);
         if(setShowLoginForm) {
@@ -45,7 +52,7 @@ const LoginForm = ({className, setShowLoginForm}) => {
                 // login was not successful
                 else {
                     // TODO: Outcome set
-                    console.log(res.message);
+                    setOutcome(res);
                 }
             })
             
@@ -62,6 +69,7 @@ const LoginForm = ({className, setShowLoginForm}) => {
     return (
         <div className={className}>
             <span>Log In</span>
+            {LoginErrors()}
             <form className='form-login' onSubmit={login}>
                 <input 
                     id='email' 
