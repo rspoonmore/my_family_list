@@ -18,6 +18,7 @@ const LoginForm = ({className, setShowLoginForm}) => {
 
     function hideLogin() {
         setFormData(blankForm);
+        setOutcome(null);
         if(setShowLoginForm) {
             setShowLoginForm(false)
         }
