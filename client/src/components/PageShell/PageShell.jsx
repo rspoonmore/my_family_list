@@ -3,17 +3,18 @@ import { useState, useEffect, useContext } from 'react'
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext'
 import Header from '../Header/Header.jsx'
-import { setCurrentUserIfCookie } from '../../cookies/CookieHandler.js';
+import { setCurrentUserIfCookie, clearCookiesIfNoCurrentUser } from '../../cookies/CookieHandler.js';
 
 
 
 const PageShell = ({mainView=null}) => {
     const [showDropdown, setShowDropdown] = useState(false);
-    const { currentUser, setCurrentUser } = useContext(AuthContext);
+    // const { currentUser, setCurrentUser } = useContext(AuthContext);
 
     const loadScreen = () => {
         console.log('Loading Screen')
-        setCurrentUserIfCookie(currentUser, setCurrentUser)
+        clearCookiesIfNoCurrentUser()
+        // setCurrentUserIfCookie(currentUser, setCurrentUser)
     }
 
     useEffect(loadScreen, [])

@@ -4,7 +4,9 @@
 
 #sidebar {
     padding: 5px 15px;
-    background-color: green;
+    background-color: rgba(0, 128, 0, 0.75);
+    min-height: 300px;
+    border-bottom-right-radius: 10px;
 }
 
 #sidebar > a {
