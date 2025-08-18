@@ -52,7 +52,6 @@ const LoginForm = ({className, setShowLoginForm}) => {
                 }
                 // login was not successful
                 else {
-                    // TODO: Outcome set
                     setOutcome(res);
                 }
             })

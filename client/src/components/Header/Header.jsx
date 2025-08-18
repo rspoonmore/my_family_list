@@ -3,10 +3,8 @@ import { Link } from 'react-router-dom'
 import { useState, useContext } from 'react'
 import { AuthContext } from '../../context/AuthContext'
 import LoginForm from '../Forms/LoginForm.jsx'
-import Icon from '@mdi/react'
-import { mdiMenu, mdiMenuOpen } from '@mdi/js'
 
-const Header = ({showDropdown=null, setShowDropdown=null}) => {
+const Header = ({dropdownLogo = null, userBadge = () => {return <></>}}) => {
     const [showLoginForm, setShowLoginForm] = useState(false);
     const { currentUser, setCurrentUser } = useContext(AuthContext);
     const apiUrl = import.meta.env.VITE_API_URL;
@@ -47,16 +45,6 @@ const Header = ({showDropdown=null, setShowDropdown=null}) => {
         return <button className='btn' onClick={logout}>Log Out</button>
     }
 
-    function dropdownLogo() {
-        const logoPath = showDropdown ? mdiMenuOpen : mdiMenu;
-        const clicked = () => {
-            if(setShowDropdown) {
-                setShowDropdown(prev => !prev)
-            }
-        }
-        return <Icon path={logoPath} size={1} color={"white"} onClick={clicked}/>
-    }
-
     return (
         <div className='header'>
             <div id='header-link-div'>
@@ -64,12 +52,13 @@ const Header = ({showDropdown=null, setShowDropdown=null}) => {
                 {dropdownLogo()}
             </div>
             <div id='header-button-div'>
+                {userBadge()}
                 {currentUser ? logoutButton() : loginButton()}
             </div>
-            {<LoginForm 
-                className={showLoginForm ? 'pop-up' : 'hidden'}
+            <LoginForm 
+                className={showLoginForm ? 'pop-up-right' : 'hidden'}
                 setShowLoginForm={setShowLoginForm}
-            ></LoginForm>}
+            />
         </div>
     )
 };

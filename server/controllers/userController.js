@@ -57,7 +57,7 @@ async function userCreate(req, res) {
         // Load form submissions
         const { email, firstName, lastName, password, adminCode } = req.body;
         // check if admin code is valid
-        const admin = adminCode && adminCode === process.env.ADMIN_CODE;
+        const admin = (adminCode && adminCode === process.env.ADMIN_CODE) === true;
         // Hash password for storage
         const hashedPassword = await bcrypt.hash(password, Number(process.env.BCRYPT_SALT));
         // Create user

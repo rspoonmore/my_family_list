@@ -19,3 +19,12 @@
     color: white;
     text-decoration: underline;
 }
+
+#header-button-div {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+
+    gap: 5px;
+}
+

@@ -3,8 +3,14 @@
 }
 
 #sidebar {
+    position: absolute;
+    top: 40px;
+    left: 0px;
+
+    width: 100px;
     padding: 5px 15px;
-    background-color: rgba(0, 128, 0, 0.75);
+    /* background-color: rgba(0, 128, 0, 0.75); */
+    background-color: green;
     min-height: 300px;
     border-bottom-right-radius: 10px;
 }
@@ -13,6 +19,36 @@
     color: white;
     font-weight: bold;
     font-size: small;
+}
+
+#sidebar > a:hover {
+    font-weight: 900;
+}
+
+#account-links {
+    position: absolute;
+    top: 40px;
+    left: 100%;
+    transform: translate(-100%);
+    border-bottom-left-radius: 10px;
+
+    padding: 5px 15px;
+    background-color: green;
+    color: white;
+
+    display: flex;
+    flex-direction: column;
+    width: 150px;
+}
+
+#account-links > a {
+    color: white;
+    font-weight: bold;
+    font-size: 10px;
+}
+
+#account-links > a:hover {
+    font-weight: 900;
 }
 
 #footer {
