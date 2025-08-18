@@ -1,9 +1,10 @@
 import './StartPage.css';
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 import { AuthContext } from '../../context/AuthContext'
 
 const StartPage = () => {
     const { currentUser } = useContext(AuthContext);
+    const [state, setState] = useState(null);
 
     function page() {
         return (
