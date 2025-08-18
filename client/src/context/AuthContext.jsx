@@ -16,14 +16,8 @@ const AuthProvider = ({ children }) => {
     });
 
     function updateUser() {
-        if (currentUser !== null) {
-            localStorage.setItem('currentUser', JSON.stringify(currentUser))
-            console.log('User saved in local storage');
-        }
-        else {
-            localStorage.setItem('currentUser', JSON.stringify(currentUser))
-            console.log('Null user saved in local storage');
-        }
+        console.log('Saving currentUser to local storage: ', currentUser)
+        localStorage.setItem('currentUser', JSON.stringify(currentUser))
     }
 
     useEffect(updateUser, [currentUser])
