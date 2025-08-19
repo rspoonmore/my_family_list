@@ -66,7 +66,7 @@ async function userUpdateDemographics({userid=null, email=null, firstName=null, 
     }
 
     // Check that user exists
-    existingUser = userGetByID({userid: userid});
+    const existingUser = userGetByID({userid: userid});
     if(!existingUser) {
         return {
             'success': false,
@@ -84,9 +84,13 @@ async function userUpdateDemographics({userid=null, email=null, firstName=null, 
         WHERE userid = $5
         ;`, [email.toLowerCase(), firstName, lastName, admin, userid]);
 
+    // Get user to return to request
+    const updatedUser = await userGetByID({userid: userid});
+    
     return {
         'success': true,
-        'message': 'User updated'
+        'message': 'User updated',
+        'user': updatedUser
     }
 }
 

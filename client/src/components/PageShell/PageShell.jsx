@@ -16,7 +16,7 @@ const PageShell = ({mainView=null}) => {
 
     const loadScreen = () => {
         console.log('Loading Screen')
-        clearCookiesIfNoCurrentUser()
+        clearCookiesIfNoCurrentUser(currentUser)
         // setCurrentUserIfCookie(currentUser, setCurrentUser)
     }
 

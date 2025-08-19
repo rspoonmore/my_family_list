@@ -2,6 +2,7 @@ const apiUrl = import.meta.env.VITE_API_URL;
 
 function clearCookiesIfNoCurrentUser(currentUser) {
     if(currentUser) {return}
+    console.log('Clearing Cookies');
     const cookies = document.cookie.split(';');
     for(let i = 0;i < cookies.length; i++) {
         if(cookies[i].split('=')[0].trim() === 'jwt' || cookies[i].split(':')[0].trim() === 'jwt') {

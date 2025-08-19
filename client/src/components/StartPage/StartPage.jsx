@@ -1,10 +1,10 @@
 import './StartPage.css';
-import { useContext, useState } from 'react'
+import { useContext } from 'react'
 import { AuthContext } from '../../context/AuthContext'
+import PageShell from '../PageShell/PageShell';
 
-const StartPage = () => {
+const StartPageView = () => {
     const { currentUser } = useContext(AuthContext);
-    const [state, setState] = useState(null);
 
     function page() {
         return (
@@ -15,6 +15,10 @@ const StartPage = () => {
     }
 
     return page()
+}
+
+const StartPage = () => {
+    return <PageShell mainView={StartPageView} />
 }
 
 export default StartPage

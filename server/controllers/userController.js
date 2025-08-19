@@ -109,9 +109,92 @@ async function usersGetAll(req, res) {
     }
 }
 
+async function userUpdate(req, res) {
+    try {
+        const params = req.params;
+        const userid = Number(params.userid);
+        const { email, firstName, lastName, adminCode } = req.body;
+        const admin = adminCode === process.env.ADMIN_CODE;
+
+        // Check for required fields
+        if(!userid) {return res.json(generateErrorJsonResponse('No userid was found in the request parameters'))}
+        if(!email) {return res.json(generateErrorJsonResponse('No email was found in the request body'))}
+
+        // Check if user exists
+        const existingUser = await db.userGetByID({userid});
+        if(!existingUser) {return res.json(generateErrorJsonResponse(`User with userid ${userid} does not exist.`))}
+
+        // Confirm that requesting user is the same or an admin
+        let reqAllowed = false;
+        const cookieSearchJson = authenticator.getUserIDFromCookie(req);
+        if (cookieSearchJson.success && cookieSearchJson.userid) {
+            const requestingUser = await db.userGetByID({userid: Number(cookieSearchJson.userid)});
+            if(requestingUser && requestingUser.userid === existingUser.userid) {
+                reqAllowed = true;
+            }
+            else if(requestingUser && requestingUser.admin) {
+                reqAllowed = true;
+            }
+        } 
+        
+        if(!reqAllowed) {return res.json(generateErrorJsonResponse("The user requesting the update is not an admin and does not match the user being updated"))}
+
+        // Update the user
+        const updateResponse = await db.userUpdateDemographics({userid, email, firstName, lastName, admin})
+
+        // Handle update errors
+        if(!updateResponse) {return res.json(generateErrorJsonResponse("Issue with the update query"))}
+        if(!updateResponse.message) {return res.json(generateErrorJsonResponse("No Update Response Message Found"))}
+        if(!updateResponse.success) {return res.json(generateErrorJsonResponse(updateResponse.message))}
+
+        // Return Success
+        return res.json(updateResponse)
+
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+async function userGetByID(req, res) {
+    try {
+        const params = req.params;
+        const userid = Number(params.userid);
+
+        // Check for required fields
+        if(!userid) {return res.json(generateErrorJsonResponse('No userid was found in the request parameters'))}
+
+        // // Confirm that requesting user is the same or an admin
+        // let reqAllowed = false;
+        // const cookieSearchJson = authenticator.getUserIDFromCookie(req);
+        // if (cookieSearchJson.success && cookieSearchJson.userid) {
+        //     const requestingUser = await db.userGetByID({userid: cookieSearchJson.userid});
+        //     if(requestingUser && requestingUser.userid === existingUser.userid) {
+        //         reqAllowed = true;
+        //     }
+        //     else if(requestingUser && requestingUser.admin) {
+        //         reqAllowed = true;
+        //     }
+        // } 
+        // if(!reqAllowed) {return res.json(generateErrorJsonResponse("The user requesting the information is not an admin and does not match the user being requested"))}
+
+        // Load users
+        const user = await db.userGetByID({userid});
+        if(!user) {return res.json(generateErrorJsonResponse(`No user with userid ${userid} was found`))}
+        return res.json({
+            success: true,
+            message: 'User found',
+            user: user
+        });
+    } catch(error) {
+        console.log(error)
+    }
+}
+
 module.exports = {
     userLogin,
     userLogout,
     userCreate,
-    usersGetAll
+    usersGetAll,
+    userGetByID,
+    userUpdate
 }

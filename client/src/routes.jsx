@@ -1,15 +1,19 @@
 import StartPage from "./components/StartPage/StartPage.jsx";
 import RegisterPage from "./components/RegisterPage/RegisterPage.jsx";
-import PageShell from "./components/PageShell/PageShell.jsx";
+import UpdateUser from "./components/UpdateUser/UpdateUser.jsx";
 
 const routes = [
     {
         path: '/',
-        element: <PageShell mainView={StartPage} />
+        element: <StartPage />
     },
     {
         path: '/register',
-        element: <PageShell mainView={RegisterPage} />
+        element: <RegisterPage />
+    },
+    {
+        path: '/users/:userid/update',
+        element: <UpdateUser />
     }
 ];
 

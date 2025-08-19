@@ -1,7 +1,8 @@
 import ('./RegisterPage.css');
 import { useState } from 'react';
+import PageShell from '../PageShell/PageShell';
 
-const RegisterPage = () => {
+const RegisterPageView = () => {
     const blankFormData = {'email': '', 'firstName': '', 'lastName': '', 'password': '', adminCode: null}
     const startingState = {
         'formData': blankFormData,
@@ -101,10 +102,10 @@ const RegisterPage = () => {
 
     
     return (
-        <div id='register-container'>
+        <div className='standard-form-container'>
             <h1>Register a New User</h1>
             {registerErrors()}
-            <form className='form-register' onSubmit={register}>
+            <form className='standard-form' onSubmit={register}>
                 <label htmlFor='register-email'>Email Address</label>
                 <input 
                     id='register-email' 
@@ -145,7 +146,7 @@ const RegisterPage = () => {
                     onChange={(e) => {setShowAdminCode(e)}} 
                 />
                 {adminCodeInput()}
-                <div id='form-register-btns'>
+                <div className='standard-form-btns'>
                     <button className='btn' type='button' onClick={clearInputs}>Clear</button>
                     <button className='btn' type='submit'>Register</button>
                 </div>
@@ -153,5 +154,9 @@ const RegisterPage = () => {
         </div>
     )
 };
+
+const RegisterPage = () => {
+    return <PageShell mainView={RegisterPageView} />
+}
 
 export default RegisterPage;
