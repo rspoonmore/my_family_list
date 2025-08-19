@@ -125,9 +125,13 @@ async function userUpdatePassword({userid=null, password=null}) {
         WHERE userid = $2
         ;`, [password, userid]);
 
+    // Get user to return to request
+    const updatedUser = await userGetByID({userid: userid});
+
     return {
         'success': true,
-        'message': 'User password updated'
+        'message': 'User password updated',
+        'user': updatedUser
     }
 }
 

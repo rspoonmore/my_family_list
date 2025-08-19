@@ -190,11 +190,68 @@ async function userGetByID(req, res) {
     }
 }
 
+async function userUpdatePassword(req, res) {
+    try {
+        const params = req.params;
+        const userid = Number(params.userid);
+        const { oldPassword, newPassword, confirmPassword } = req.body;
+
+        // Check for required fields
+        if(!userid) {return res.json(generateErrorJsonResponse('No userid was found in the request parameters'))}
+        if(!oldPassword) {return res.json(generateErrorJsonResponse('No Old Password Entered'))}
+        if(!newPassword) {return res.json(generateErrorJsonResponse('No New Password Entered'))}
+        if(!confirmPassword) {return res.json(generateErrorJsonResponse('No Confirmed Password Entered'))}
+        if(newPassword !== confirmPassword) {return res.json(generateErrorJsonResponse('New Passwords Do Not Match'))}
+
+        // Check if user exists
+        const existingUser = await db.userGetByID({userid});
+        if(!existingUser) {return res.json(generateErrorJsonResponse(`User with userid ${userid} does not exist.`))}
+
+        // Confirm that requesting user is the same or an admin
+        let reqAllowed = false;
+        const cookieSearchJson = authenticator.getUserIDFromCookie(req);
+        if (cookieSearchJson.success && cookieSearchJson.userid) {
+            const requestingUser = await db.userGetByID({userid: Number(cookieSearchJson.userid)});
+            if(requestingUser && requestingUser.userid === existingUser.userid) {
+                reqAllowed = true;
+            }
+            else if(requestingUser && requestingUser.admin) {
+                reqAllowed = true;
+            }
+        } 
+        
+        if(!reqAllowed) {return res.json(generateErrorJsonResponse("The user requesting the update is not an admin and does not match the user being updated"))}
+
+        // Check that passwords match
+        const match = await bcrypt.compare(oldPassword, existingUser.password);
+        if(!match) {return res.json(generateErrorJsonResponse(`The password entered was incorrect.`))};
+
+        // Hash password for storage
+        const hashedPassword = await bcrypt.hash(newPassword, Number(process.env.BCRYPT_SALT));
+
+        // Update the user
+        const updateResponse = await db.userUpdatePassword({userid, password: hashedPassword});
+
+        // Handle update errors
+        if(!updateResponse) {return res.json(generateErrorJsonResponse("Issue with the update query"))};
+        if(!updateResponse.message) {return res.json(generateErrorJsonResponse("No Update Response Message Found"))};
+        if(!updateResponse.success) {return res.json(generateErrorJsonResponse(updateResponse.message))};
+
+        // Return Success
+        return res.json(updateResponse);
+        
+
+    } catch(error) {
+        console.log(error)
+    }
+}
+
 module.exports = {
     userLogin,
     userLogout,
     userCreate,
     usersGetAll,
     userGetByID,
-    userUpdate
+    userUpdate,
+    userUpdatePassword
 }

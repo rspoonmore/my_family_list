@@ -7,6 +7,7 @@ userRouter.post('/logout', userController.userLogout);
 userRouter.post('/', userController.userCreate);
 userRouter.get('/', userController.usersGetAll);
 userRouter.put('/:userid', userController.userUpdate);
+userRouter.put('/:userid/password', userController.userUpdatePassword);
 userRouter.get('/:userid', userController.userGetByID);
 
 module.exports = userRouter;
