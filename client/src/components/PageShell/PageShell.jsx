@@ -41,9 +41,16 @@ const PageShell = ({mainView=null}) => {
 
     // Left Sidebar
     const sideBar = () => {
+        const adminPage = () => {
+            if(!currentUser) {return <></>}
+            if(!currentUser.admin) {return <></>}
+            return <Link to='/admin-page' onClick={sideBarButtonHit}>Admin Page</Link>
+        }
+
         return (
-            <div id='sidebar' className={showDropdown ? '' : 'hidden'}>
+            <div className={showDropdown ? 'sidebar' : 'hidden'}>
                 <Link to='/register' onClick={sideBarButtonHit}>Register</Link>
+                {adminPage()}
             </div>
         )
     }
@@ -60,8 +67,8 @@ const PageShell = ({mainView=null}) => {
         if(!currentUser) {return <></>}
         return (
             <div id='account-links'>
-                <Link to={`users/${currentUser.userid}/update`} onClick={rightSideBarButtonHit}>Update User</Link>
-                <Link to={`users/${currentUser.userid}/password`} onClick={rightSideBarButtonHit}>Change Password</Link>
+                <Link to={`/users/${currentUser.userid}/update`} onClick={rightSideBarButtonHit}>Update User</Link>
+                <Link to={`/users/${currentUser.userid}/password`} onClick={rightSideBarButtonHit}>Change Password</Link>
             </div>
         )
     }

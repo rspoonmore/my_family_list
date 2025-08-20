@@ -117,3 +117,19 @@ input {
     gap: 10px;
     margin: 10px 0px;
 }
+
+table {
+  margin: 5px;
+}
+
+tr {
+  border-bottom: 1px solid black;
+}
+
+thead {
+  border-bottom: 3px double black;
+}
+
+th, td {
+  padding: 10px;
+}

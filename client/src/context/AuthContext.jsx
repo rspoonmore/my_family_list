@@ -1,4 +1,5 @@
 import { createContext, useState, useEffect } from "react";
+import { clearCookiesIfNoCurrentUser } from "../cookies/CookieHandler";
 
 const AuthContext = createContext();
 
@@ -16,8 +17,9 @@ const AuthProvider = ({ children }) => {
     });
 
     function updateUser() {
-        console.log('Saving currentUser to local storage: ', currentUser)
-        localStorage.setItem('currentUser', JSON.stringify(currentUser))
+        console.log('Saving currentUser to local storage: ', currentUser);
+        localStorage.setItem('currentUser', JSON.stringify(currentUser));
+        clearCookiesIfNoCurrentUser(currentUser);
     }
 
     useEffect(updateUser, [currentUser])

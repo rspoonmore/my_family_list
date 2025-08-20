@@ -2,26 +2,29 @@
     display: flex;
 }
 
-#sidebar {
+.sidebar {
     position: absolute;
     top: 40px;
     left: 0px;
 
     width: 100px;
-    padding: 5px 15px;
+    padding: 5px 10px;
     /* background-color: rgba(0, 128, 0, 0.75); */
     background-color: green;
     min-height: 300px;
     border-bottom-right-radius: 10px;
+
+    display: flex;
+    flex-direction: column;
 }
 
-#sidebar > a {
+.sidebar > a {
     color: white;
     font-weight: bold;
     font-size: small;
 }
 
-#sidebar > a:hover {
+.sidebar > a:hover {
     font-weight: 900;
 }
 

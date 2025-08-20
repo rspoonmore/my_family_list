@@ -49,6 +49,7 @@ const LoginForm = ({className, setShowLoginForm}) => {
                 if(res.success) {
                     setCurrentUser(res.user);
                     hideLogin();
+                    window.location.reload();
                 }
                 // login was not successful
                 else {

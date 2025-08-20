@@ -1,4 +1,3 @@
-// import './UpdateUser.css';
 import { useContext, useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { AuthContext } from '../../context/AuthContext'
@@ -11,9 +10,11 @@ const UpdateUserView = () => {
         'outcome': null,
         'showAdminCode': false
     }
+    const [updateAllowed, setUpdateAllowed] = useState(true);
     const { userid } = useParams();
     const [state, setState] = useState(startingState);
     const apiUrl = import.meta.env.VITE_API_URL;
+    const { currentUser } = useContext(AuthContext)
 
     // Show outcome of PUT
     const updateErrors = () => {
@@ -119,6 +120,16 @@ const UpdateUserView = () => {
 
     // Load user and populate form
     const loadForm = () => {
+        // Check that current user exists
+        if(!currentUser) {
+            setUpdateAllowed(false)
+            return;
+        }
+        // Check that current user is allowed to make the update
+        if(!currentUser.admin && currentUser.userid !== userid) {
+            setUpdateAllowed(false);
+            return;
+        }
         console.log('Loading User');
         try {
             // Request user details
@@ -147,53 +158,61 @@ const UpdateUserView = () => {
     }
 
     // Load User
-    useEffect(loadForm, [])
+    useEffect(loadForm, [currentUser])
 
+    // Generate View
+    function generateView() {
+        // Check if update is allowed 
+        if(!updateAllowed) {return <div>You do not have permission to update this user</div>}
+        
+        // return view
+        return (
+            <div className='standard-form-container'>
+                <h1>Update User</h1>
+                {updateErrors()}
+                <form className='standard-form' onSubmit={updateUser}>
+                    <label htmlFor='update-email'>Email Address</label>
+                    <input 
+                        id='update-email' 
+                        name='email' 
+                        type='email' 
+                        value={state.formData['email']}
+                        onChange={(e) => {updateFormData('email', e.target.value)}}
+                    required/>
+                    <label htmlFor='update-firstName'>First Name</label>
+                    <input 
+                        id='update-firstName' 
+                        name='firstName' 
+                        type='firstName' 
+                        value={state.formData['firstName']}
+                        onChange={(e) => {updateFormData('firstName', e.target.value)}}
+                    />
+                    <label htmlFor='update-lastName'>Last Name</label>
+                    <input 
+                        id='update-lastName' 
+                        name='lastName' 
+                        type='lastName' 
+                        value={state.formData['lastName']}
+                        onChange={(e) => {updateFormData('lastName', e.target.value)}}
+                    />
+                    <label htmlFor='show-admin'>Admin Account?</label>
+                    <input 
+                        id='show-admin'
+                        type='checkbox'
+                        checked={state.showAdminCode}
+                        onChange={(e) => {setShowAdminCode(e)}} 
+                    />
+                    {adminCodeInput()}
+                    <div className='standard-form-btns'>
+                        <button className='btn' type='button' onClick={clearInputs}>Clear</button>
+                        <button className='btn' type='submit'>Update</button>
+                    </div>
+                </form>
+            </div>
+        )
+    }
     
-    return (
-        <div className='standard-form-container'>
-            <h1>Update User</h1>
-            {updateErrors()}
-            <form className='standard-form' onSubmit={updateUser}>
-                <label htmlFor='update-email'>Email Address</label>
-                <input 
-                    id='update-email' 
-                    name='email' 
-                    type='email' 
-                    value={state.formData['email']}
-                    onChange={(e) => {updateFormData('email', e.target.value)}}
-                required/>
-                <label htmlFor='update-firstName'>First Name</label>
-                <input 
-                    id='update-firstName' 
-                    name='firstName' 
-                    type='firstName' 
-                    value={state.formData['firstName']}
-                    onChange={(e) => {updateFormData('firstName', e.target.value)}}
-                />
-                <label htmlFor='update-lastName'>Last Name</label>
-                <input 
-                    id='update-lastName' 
-                    name='lastName' 
-                    type='lastName' 
-                    value={state.formData['lastName']}
-                    onChange={(e) => {updateFormData('lastName', e.target.value)}}
-                />
-                <label htmlFor='show-admin'>Admin Account?</label>
-                <input 
-                    id='show-admin'
-                    type='checkbox'
-                    checked={state.showAdminCode}
-                    onChange={(e) => {setShowAdminCode(e)}} 
-                />
-                {adminCodeInput()}
-                <div className='standard-form-btns'>
-                    <button className='btn' type='button' onClick={clearInputs}>Clear</button>
-                    <button className='btn' type='submit'>Update</button>
-                </div>
-            </form>
-        </div>
-    )
+    return generateView()
 }
 
 const UpdateUser = () => {
