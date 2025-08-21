@@ -106,7 +106,7 @@ const UpdateUserView = () => {
                 // update successful
                 if(res.success) {
                     setOutcome(res);
-                    if(res.user) {populateForm(res.user)};
+                    // if(res.user) {populateForm(res.user)};
                 }
                 // update was not successful
                 else {

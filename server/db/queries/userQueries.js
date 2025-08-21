@@ -65,15 +65,6 @@ async function userUpdateDemographics({userid=null, email=null, firstName=null, 
         }
     }
 
-    // Check that user exists
-    const existingUser = userGetByID({userid: userid});
-    if(!existingUser) {
-        return {
-            'success': false,
-            'message': 'User does not exist'
-        }
-    }
-
     // Update user
     await pool.query(`
         UPDATE users 
@@ -83,14 +74,10 @@ async function userUpdateDemographics({userid=null, email=null, firstName=null, 
             , admin = $4
         WHERE userid = $5
         ;`, [email.toLowerCase(), firstName, lastName, admin, userid]);
-
-    // Get user to return to request
-    const updatedUser = await userGetByID({userid: userid});
     
     return {
         'success': true,
         'message': 'User updated',
-        'user': updatedUser
     }
 }
 
@@ -109,15 +96,6 @@ async function userUpdatePassword({userid=null, password=null}) {
         }
     }
 
-    // Check that user exists
-    existingUser = userGetByID({userid: userid});
-    if(!existingUser) {
-        return {
-            'success': false,
-            'message': 'User does not exist'
-        }
-    }
-
     // Update user
     await pool.query(`
         UPDATE users 
@@ -125,13 +103,9 @@ async function userUpdatePassword({userid=null, password=null}) {
         WHERE userid = $2
         ;`, [password, userid]);
 
-    // Get user to return to request
-    const updatedUser = await userGetByID({userid: userid});
-
     return {
         'success': true,
         'message': 'User password updated',
-        'user': updatedUser
     }
 }
 
@@ -145,14 +119,14 @@ async function userDelete({userid=null, deep=true}) {
     }
 
     // Delete from users table
-    await pool.query(`DELETE FROM users where userid = $1`, [userid]);
+    await pool.query(`DELETE FROM users where userid = $1;`, [userid]);
 
     // Waterfall delete if deep is true
     if(deep) {
         // Memberhsips
-        await pool.query(`DELETE FROM memberships where userid = $1`, [userid]);
+        await pool.query(`DELETE FROM memberships where userid = $1;`, [userid]);
         // Users 
-        await pool.query(`DELETE FROM items where userid = $1`, [userid]);
+        await pool.query(`DELETE FROM items where userid = $1;`, [userid]);
     }
     return {
         'success': true,
