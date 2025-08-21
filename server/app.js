@@ -3,6 +3,7 @@ require('dotenv').config();
 
 // Load routers
 const userRouter = require('./routes/userRouter');
+const groupRouter = require('./routes/groupRouter');
 
 const app = express();
 app.use(express.urlencoded({ extended: true }));
@@ -31,6 +32,7 @@ app.get('/', (req, res) => {
     });
 });
 
-app.use('/users', userRouter)
+app.use('/users', userRouter);
+app.use('/groups', groupRouter);
 
 app.listen(process.env.PORT || 5000, () => {console.log(`Listening on port ${process.env.PORT || 5000}`)});
