@@ -61,24 +61,19 @@ const AdminPageView = () => {
             console.log(`Deleting ${catKey}: ${id} from ${category}s.`)
             await fetch(`${apiUrl}/${category}s/${id}`, {
                 method: 'DELETE',
-                headers : {
-                    'Content-Type': 'application/json'
-                },
                 credentials: 'include'
             })
             .then(res => res.json())
             .then(res => {
                 //successful
                 if(res.success) {
-                    if(res[`${category}s`]) {setData(res[`${category}s`])}
+                    // delete from view as well
+                    setData(prev => {return [...prev].filter(entry => entry[catKey] != id)})
                 }
                 else if (res.message) {
                     setOutcome(res)
                 }
             })
-            
-            // delete from view as well
-            setData(prev => {return [...prev].filter(entry => entry[catKey] != id)})
         }
     }
 
