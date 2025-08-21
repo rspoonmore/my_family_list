@@ -246,6 +246,42 @@ async function userUpdatePassword(req, res) {
     }
 }
 
+async function userDelete(req, res) {
+    try {
+        const params = req.params;
+        const userid = Number(params.userid);
+        // Check for required fields
+        if(!userid) {return res.json(generateErrorJsonResponse('No userid was found in the request parameters'))}
+
+        // Confirm that requesting user is the same or an admin
+        let reqAllowed = false;
+        const cookieSearchJson = authenticator.getUserIDFromCookie(req);
+        if (cookieSearchJson.success && cookieSearchJson.userid) {
+            const requestingUser = await db.userGetByID({userid: Number(cookieSearchJson.userid)});
+            if(requestingUser && requestingUser.userid === userid) {
+                reqAllowed = true;
+            }
+            else if(requestingUser && requestingUser.admin) {
+                reqAllowed = true;
+            }
+        } 
+        if(!reqAllowed) {return res.json(generateErrorJsonResponse("The user requesting the update is not an admin and does not match the user being updated"))}
+
+        // Delete the user
+        const deleteResponse = await db.userDelete({userid, deep: true});
+
+        // Handle update errors
+        if(!deleteResponse) {return res.json(generateErrorJsonResponse("Issue with the delete query"))};
+        if(!deleteResponse.message) {return res.json(generateErrorJsonResponse("No Delete Response Message Found"))};
+        if(!deleteResponse.success) {return res.json(generateErrorJsonResponse(deleteResponse.message))};
+
+        // Return Success
+        return res.json(deleteResponse);
+    } catch(error) {
+        console.log(error)
+    }
+}
+
 module.exports = {
     userLogin,
     userLogout,
@@ -253,5 +289,6 @@ module.exports = {
     usersGetAll,
     userGetByID,
     userUpdate,
-    userUpdatePassword
+    userUpdatePassword,
+    userDelete
 }

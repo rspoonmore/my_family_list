@@ -63,6 +63,8 @@ input {
   background-color: white;
   border-radius: 15px;
   padding: 2px 6px;
+  font-size: 14px;
+  appearance: button;
 }
 
 .badge {
