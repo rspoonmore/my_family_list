@@ -67,7 +67,7 @@ const PageShell = ({mainView=null}) => {
         if(!currentUser) {return <></>}
         return (
             <div id='account-links'>
-                <Link to={`/users/${currentUser.userid}/update`} onClick={rightSideBarButtonHit}>Update User</Link>
+                <Link to={`/users/${currentUser.userid}/update`} state={{user: currentUser}} onClick={rightSideBarButtonHit}>Update User</Link>
                 <Link to={`/users/${currentUser.userid}/password`} onClick={rightSideBarButtonHit}>Change Password</Link>
             </div>
         )

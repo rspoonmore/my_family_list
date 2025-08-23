@@ -141,7 +141,7 @@ const AdminPageView = () => {
                         <td>{user.firstname}</td>
                         <td>{user.lastname}</td>
                         <td>{user.admin ? 'Yes' : 'No'}</td>
-                        <td><Link className='btn' to={`/users/${user.userid}/update`}>Edit</Link></td>
+                        <td><Link className='btn' to={`/users/${user.userid}/update`} state={{user}}>Edit</Link></td>
                         <td><button className='btn' onClick={deletePressed('user', user.userid)}>Delete</button></td>
                     </tr>
                 )
@@ -165,13 +165,41 @@ const AdminPageView = () => {
             )
         }
 
+        const userCardView = () => {
+            if(!userData) {return <></>}
+
+            function userCard(user) {
+                return (
+                    <div key={`user-card-${user.userid}`} className='section-card'>
+                        <span className='card-title'>{user.email}</span>
+                        <div className='card-detail-div'>
+                            <span className='card-details'>ID: {user.userid}</span>
+                            <span className='card-details'>Name: {user.firstname} {user.lastname}</span>
+                            <span className='card-details'>Admin: {user.admin ? 'Yes' : 'No'}</span>
+                        </div>
+                        <div className='card-button-div'>
+                            <Link className='btn btn-small' to={`/users/${user.userid}/update`} state={{user}}>Edit</Link>
+                            <button className='btn btn-small' onClick={deletePressed('user', user.userid)}>Delete</button>
+                        </div>
+                    </div>
+                )
+            }
+
+            return (
+                <div className='section-card-container'>
+                    {userData.map(user => (userCard(user)))}
+                </div>
+            )
+        }
+
 
         return (
             <div className='admin-container'>
                 <div className='admin-section'>
                     <div><strong>Users</strong></div>
                     {sectionOutcomes({sectionOutcome: userLoadOutcome})}
-                    {userDataView()}
+                    {userCardView()}
+                    {/* {userDataView()} */}
                 </div>
             </div>
         )

@@ -1,7 +1,8 @@
 .admin-container {
     display: flex;
     flex-direction: column;
-    margin: auto;
+    width: 100%;
+    /* margin: auto; */
     padding: 15px;
 }
 
@@ -11,8 +12,55 @@
     align-items: center;
 }
 
-.admin-section-data {
+/* .admin-section-data {
     align-self: flex-start;
     display: flex;
     flex-direction: column;
+} */
+
+
+.section-card-container {
+    width: 100%;
+    display: grid;
+    grid-template-rows: repeat(auto-fit, minmax(100px, 1fr));
+    grid-template-columns: repeat(auto-fit, 200px);
+    gap: 10px;
+    /* grid-auto-flow: column; */
+}
+
+.section-card {
+    max-width: 200px;
+    max-height: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    
+    border: 1px solid black;
+    border-radius: 15px;
+    padding: 5px 15px;
+}
+
+.card-detail-div {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    align-self: flex-start
+}
+
+.card-title {
+    font-size: 15px;
+    font-weight: bold;
+    align-self: center;
+}
+
+.card-details {
+    font-size: 10px;
+}
+
+.card-button-div {
+    display: flex;
+    gap: 5px;
+    align-content: space-around;
 }

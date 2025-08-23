@@ -1,5 +1,5 @@
 import { useContext, useState, useEffect } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams,useLocation } from 'react-router-dom'
 import { AuthContext } from '../../context/AuthContext'
 import PageShell from '../PageShell/PageShell'
 
@@ -10,6 +10,7 @@ const UpdateUserView = () => {
         'outcome': null,
         'showAdminCode': false
     }
+    const locationState = useLocation().state;
     const [updateAllowed, setUpdateAllowed] = useState(true);
     const { userid } = useParams();
     const [state, setState] = useState(startingState);
@@ -83,6 +84,7 @@ const UpdateUserView = () => {
     const updateUser = async (e) => {
         e.preventDefault();
         console.log('Updating User');
+        if(location)
         try {
             // Save form data in body of request
             const data = new FormData();
@@ -130,8 +132,15 @@ const UpdateUserView = () => {
             setUpdateAllowed(false);
             return;
         }
-        console.log('Loading User');
+        // Check if the user data was passed in the locationState and fetch not required
+        if(locationState && locationState.user && locationState.user.userid === Number(userid)) {
+            console.log('Loading User From Location');
+            populateForm(locationState.user);
+            return
+        }
+        // Fetch user data from API
         try {
+            console.log('Loading User From API');
             // Request user details
             fetch(`${apiUrl}/users/${Number(userid)}`, {
                 method: 'GET',
@@ -158,7 +167,7 @@ const UpdateUserView = () => {
     }
 
     // Load User
-    useEffect(loadForm, [currentUser])
+    useEffect(loadForm, [currentUser, locationState])
 
     // Generate View
     function generateView() {
