@@ -3,7 +3,7 @@ import { useState, useEffect, useContext } from 'react'
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext'
 import Header from '../Header/Header.jsx'
-import { setCurrentUserIfCookie, clearCookiesIfNoCurrentUser } from '../../cookies/CookieHandler.js';
+import { clearCurrentUserIfNoCookie, clearCookiesIfNoCurrentUser } from '../../cookies/CookieHandler.js';
 import UserBadge from '../Badges/UserBadge.jsx'
 import Icon from '@mdi/react'
 import { mdiMenu, mdiMenuOpen } from '@mdi/js'
@@ -12,11 +12,12 @@ import { mdiMenu, mdiMenuOpen } from '@mdi/js'
 const PageShell = ({mainView=null}) => {
     const [showDropdown, setShowDropdown] = useState(false);
     const [showAccountSidebar, setShowAccountSidebar] = useState(false);
-    const { currentUser } = useContext(AuthContext);
+    const { currentUser, setCurrentUser } = useContext(AuthContext);
 
     const loadScreen = () => {
         console.log('Loading Screen')
-        clearCookiesIfNoCurrentUser(currentUser)
+        clearCookiesIfNoCurrentUser(currentUser);
+        clearCurrentUserIfNoCookie(setCurrentUser);
         // setCurrentUserIfCookie(currentUser, setCurrentUser)
     }
 

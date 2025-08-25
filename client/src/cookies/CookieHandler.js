@@ -13,6 +13,19 @@ function clearCookiesIfNoCurrentUser(currentUser) {
     return;
 }
 
+function clearCurrentUserIfNoCookie(setCurrentUser) {
+    const cookies = document.cookie.split(';');
+    for(let i = 0;i < cookies.length; i++) {
+        if(cookies[i].split('=')[0].trim() === 'jwt' || cookies[i].split(':')[0].trim() === 'jwt') {
+            // JWT cookie found
+            return;
+        };
+    };
+
+    // No JWT cookie found
+    setCurrentUser(null);
+}
+
 async function setCurrentUserIfCookie(currentUser, setCurrentUser) {
     if(currentUser) {return}
 
@@ -41,4 +54,4 @@ async function setCurrentUserIfCookie(currentUser, setCurrentUser) {
     };
 }
 
-export {clearCookiesIfNoCurrentUser, setCurrentUserIfCookie}
+export {clearCookiesIfNoCurrentUser, setCurrentUserIfCookie, clearCurrentUserIfNoCookie}

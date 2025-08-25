@@ -147,8 +147,14 @@ async function userUpdate(req, res) {
         if(!updateResponse.message) {return res.json(generateErrorJsonResponse("No Update Response Message Found"))}
         if(!updateResponse.success) {return res.json(generateErrorJsonResponse(updateResponse.message))}
 
+        // Get user to return
+        const updatedUser = await db.userGetByID({userid});
+
         // Return Success
-        return res.json(updateResponse)
+        return res.json({
+            ...updateResponse,
+            user: updatedUser
+        })
 
     } catch (error) {
         console.log(error)

@@ -10,12 +10,13 @@ const UpdateUserView = () => {
         'outcome': null,
         'showAdminCode': false
     }
-    const locationState = useLocation().state;
+    const location = useLocation();
     const [updateAllowed, setUpdateAllowed] = useState(true);
+    const [userLoaded, setUserLoaded] = useState(false);
     const { userid } = useParams();
     const [state, setState] = useState(startingState);
     const apiUrl = import.meta.env.VITE_API_URL;
-    const { currentUser } = useContext(AuthContext)
+    const { currentUser, setCurrentUser } = useContext(AuthContext)
 
     // Show outcome of PUT
     const updateErrors = () => {
@@ -59,8 +60,19 @@ const UpdateUserView = () => {
     // Populate form with user data
     const populateForm = (user) => {
         updateFormData('email', user.email)
-        updateFormData('firstName', user.firstname)
-        updateFormData('lastName', user.lastname)
+        if(user.firstname) {
+            updateFormData('firstName', user.firstname)
+        }
+        else if(user.firstName) {
+            updateFormData('firstName', user.firstName)
+        }
+        if(user.lastname) {
+            updateFormData('lastName', user.lastname)
+        }
+        else if(user.lastName) {
+            updateFormData('lastName', user.lastName)
+        }
+        
     }
 
     // Handle showing or hiding the admin code input
@@ -83,7 +95,6 @@ const UpdateUserView = () => {
     // Function called when user is updated
     const updateUser = async (e) => {
         e.preventDefault();
-        console.log('Updating User');
         if(location)
         try {
             // Save form data in body of request
@@ -104,11 +115,12 @@ const UpdateUserView = () => {
             })
             .then(res => res.json())
             .then(res => {
-                console.log(res)
                 // update successful
                 if(res.success) {
                     setOutcome(res);
-                    // if(res.user) {populateForm(res.user)};
+                    if(res.user && currentUser.userid === res.user.userid) {
+                        setCurrentUser(res.user);
+                    }
                 }
                 // update was not successful
                 else {
@@ -128,52 +140,34 @@ const UpdateUserView = () => {
             return;
         }
         // Check that current user is allowed to make the update
-        if(!currentUser.admin && currentUser.userid !== userid) {
+        if(!currentUser.admin && currentUser.userid !== Number(userid)) {
             setUpdateAllowed(false);
             return;
         }
-        // Check if the user data was passed in the locationState and fetch not required
-        if(locationState && locationState.user && locationState.user.userid === Number(userid)) {
-            console.log('Loading User From Location');
-            populateForm(locationState.user);
-            return
-        }
-        // Fetch user data from API
-        try {
-            console.log('Loading User From API');
-            // Request user details
-            fetch(`${apiUrl}/users/${Number(userid)}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                credentials: 'include'
-            })
-            .then(res => res.json())
-            .then(res => {
-                console.log(res)
-                // user found
-                if(res.success) {
-                    if(res.user) {populateForm(res.user)};
-                }
-                // user not found
-                else {
-                    setOutcome(res);
-                }
-            })
-        } catch(error) {
-            console.log(error);
-        }
+        // Check if the user data was passed in the location
+        if(!location) {return setUserLoaded(false);}
+        if(!location.state) {return setUserLoaded(false);}
+        if(!location.state.user) {return setUserLoaded(false);}
+        if(!location.state.user.userid) {return setUserLoaded(false);}
+        if(!(location.state.user.userid === Number(userid))) {return setUserLoaded(false);}
+        
+        // Load user data
+        setUserLoaded(true);
+        console.log('Loading User From Location');
+        return populateForm(location.state.user);
     }
 
     // Load User
-    useEffect(loadForm, [currentUser, locationState])
+    useEffect(loadForm, [currentUser, location])
 
     // Generate View
     function generateView() {
         // Check if update is allowed 
-        if(!updateAllowed) {return <div>You do not have permission to update this user</div>}
+        if(!updateAllowed) {return <div>You do not have permission to update this user.</div>}
         
+        // Check if the user was loaded for edit
+        if(!userLoaded) {return <div>A user was not provided for updating.</div>}
+
         // return view
         return (
             <div className='standard-form-container'>
