@@ -14,6 +14,10 @@ const AdminPageView = () => {
     const [groupLoadOutcome, setGroupLoadOutcome] = useState(null);
     const [groupData, setGroupData] = useState(null); 
 
+    // Membership states
+    const [membershipLoadOutcome, setMembershipLoadOutcome] = useState(null);
+    const [membershipData, setMembershipData] = useState(null); 
+
     // List states
     const [listLoadOutcome, setListLoadOutcome] = useState(null);
     const [listData, setListData] = useState(null); 
@@ -32,7 +36,7 @@ const AdminPageView = () => {
     // Delete pushed
     const deletePressed = (category, id) => async () => {
         // Check that category is valid
-        const catOptions = ['user', 'group', 'list'];
+        const catOptions = ['user', 'group', 'membership', 'list'];
         if(!catOptions.includes(category)) {return console.log(`Category of ${category} is not valid`)};
 
         let [catKey, setData, setOutcome] = [null, null]; 
@@ -42,6 +46,9 @@ const AdminPageView = () => {
                 break;
             case 'group':
                 [catKey, setData, setOutcome] = ['groupid', setGroupData, setGroupLoadOutcome];
+                break;
+            case 'membership':
+                [catKey, setData, setOutcome] = ['membershipid', setMembershipData, setMembershipLoadOutcome];
                 break;
             case 'list':
                 [catKey, setData, setOutcome] = ['listid', setListData, setListLoadOutcome];
@@ -105,6 +112,33 @@ const AdminPageView = () => {
     }
 
     // Load Group Data
+    const loadGroups = () => {
+        try {
+            console.log('Loading Groups')
+            fetch(`${apiUrl}/groups`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include'
+            })
+            .then(res => res.json())
+            .then(res => {
+                // successful
+                if(res.success) {
+                    if(res.groups) {setGroupData(res.groups)}
+                }
+                // update was not successful
+                else {
+                    setGroupLoadOutcome(res);
+                }
+            })
+        } catch(error) {
+            console.log(error)
+        }
+    }
+
+    // Load Membership Data
 
     // Load List Data
 
@@ -123,6 +157,7 @@ const AdminPageView = () => {
         }
 
         loadUsers();
+        loadGroups();
     }
 
     // Generate View
@@ -130,41 +165,6 @@ const AdminPageView = () => {
         if(!updateAllowed) {return <div>You are not an admin, and therefore cannot access this page.</div>}
 
         // Show user data
-        const userDataView = () => {
-            if(!userData) {return <></>}
-
-            const userTableRow = (user) => {
-                return (
-                    <tr key={`userid-table-row-${user.userid}`}>
-                        <td>{user.userid}</td>
-                        <td>{user.email}</td>
-                        <td>{user.firstname}</td>
-                        <td>{user.lastname}</td>
-                        <td>{user.admin ? 'Yes' : 'No'}</td>
-                        <td><Link className='btn' to={`/users/${user.userid}/update`} state={{user}}>Edit</Link></td>
-                        <td><button className='btn' onClick={deletePressed('user', user.userid)}>Delete</button></td>
-                    </tr>
-                )
-            }
-
-            return (
-                <table>
-                    <thead>
-                        <tr>
-                            <th>User ID</th>
-                            <th>Email</th>
-                            <th>First Name</th>
-                            <th>Last Name</th>
-                            <th>Admin</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {userData.map(user => (userTableRow(user)))}
-                    </tbody>
-                </table>
-            )
-        }
-
         const userCardView = () => {
             if(!userData) {return <></>}
 
@@ -192,6 +192,32 @@ const AdminPageView = () => {
             )
         }
 
+        // Show group data
+        const groupCardView = () => {
+            if(!groupData) {return <></>}
+
+            function groupCard(group) {
+                return (
+                    <div key={`group-card-${group.groupid}`} className='section-card'>
+                        <span className='card-title'>{group.groupname}</span>
+                        <div className='card-detail-div'>
+                            <span className='card-details'>ID: {group.groupid}</span>
+                        </div>
+                        <div className='card-button-div'>
+                            <Link className='btn btn-small' to={`/groups/${group.groupid}/update`} state={{group}}>Edit</Link>
+                            <button className='btn btn-small' onClick={deletePressed('group', group.groupid)}>Delete</button>
+                        </div>
+                    </div>
+                )
+            }
+
+            return (
+                <div className='section-card-container'>
+                    {groupData.map(group => (groupCard(group)))}
+                </div>
+            )
+        }
+
 
         return (
             <div className='admin-container'>
@@ -199,7 +225,12 @@ const AdminPageView = () => {
                     <div><strong>Users</strong></div>
                     {sectionOutcomes({sectionOutcome: userLoadOutcome})}
                     {userCardView()}
-                    {/* {userDataView()} */}
+                </div>
+
+                <div className='admin-section'>
+                    <div><strong>Groups</strong></div>
+                    {sectionOutcomes({sectionOutcome: groupLoadOutcome})}
+                    {groupCardView()}
                 </div>
             </div>
         )
