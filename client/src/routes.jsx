@@ -24,7 +24,8 @@ const routes = [
     {
         path: '/admin-page',
         element: <AdminPage />
-    }
+    },
+
 ];
 
 export default routes;

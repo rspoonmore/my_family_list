@@ -74,9 +74,14 @@ async function groupEdit(req, res) {
         if(!queryResults.success) {
             return res.json(generateErrorJsonResponse(queryResults.message))
         }
+
+        // Get edited group
+        const editedGroup = await db.groupGet({groupid});
+
         return res.json({
             success: true,
-            message: 'Group Edited!'
+            message: 'Group Edited!',
+            group: editedGroup
         })
     } catch(error) {
         console.log(error)

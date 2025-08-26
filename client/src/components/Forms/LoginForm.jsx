@@ -71,7 +71,7 @@ const LoginForm = ({className, setShowLoginForm}) => {
         <div className={className}>
             <span>Log In</span>
             {LoginErrors()}
-            <form className='form-login' onSubmit={login}>
+            <form className='standard-form' onSubmit={login}>
                 <input 
                     id='email' 
                     name='email' 
@@ -88,7 +88,7 @@ const LoginForm = ({className, setShowLoginForm}) => {
                     value={formData['password']}
                     onChange={(e) => {setFormData(prev => ({...prev, password: e.target.value}))}}
                 required/>
-                <div id='form-login-btns'>
+                <div className='standard-form-btns'>
                     <button className='btn btn-small' type='button' onClick={cancel}>Cancel</button>
                     <button className='btn btn-small' type='submit'>Log In</button>
                 </div>

@@ -3,6 +3,7 @@ import { useContext, useState, useEffect } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { AuthContext } from '../../context/AuthContext'
 import PageShell from '../PageShell/PageShell'
+import GroupView from '../Forms/GroupView'
 
 const AdminPageView = () => {
     const [updateAllowed, setUpdateAllowed] = useState(true);
@@ -13,6 +14,9 @@ const AdminPageView = () => {
     // Group states
     const [groupLoadOutcome, setGroupLoadOutcome] = useState(null);
     const [groupData, setGroupData] = useState(null); 
+    const [showGroupForm, setShowGroupForm] = useState(false);
+    const [groupFormType, setGroupFormType] = useState('register');
+    const [groupFormData, setGroupFormData] = useState(null);
 
     // Membership states
     const [membershipLoadOutcome, setMembershipLoadOutcome] = useState(null);
@@ -197,6 +201,12 @@ const AdminPageView = () => {
             if(!groupData) {return <></>}
 
             function groupCard(group) {
+                function editButton() {
+                    setGroupFormData(group);
+                    setGroupFormType('update');
+                    setShowGroupForm(true);
+                }
+
                 return (
                     <div key={`group-card-${group.groupid}`} className='section-card'>
                         <span className='card-title'>{group.groupname}</span>
@@ -204,7 +214,7 @@ const AdminPageView = () => {
                             <span className='card-details'>ID: {group.groupid}</span>
                         </div>
                         <div className='card-button-div'>
-                            <Link className='btn btn-small' to={`/groups/${group.groupid}/update`} state={{group}}>Edit</Link>
+                            <button className='btn btn-small' onClick={editButton}>Edit</button>
                             <button className='btn btn-small' onClick={deletePressed('group', group.groupid)}>Delete</button>
                         </div>
                     </div>
@@ -218,17 +228,30 @@ const AdminPageView = () => {
             )
         }
 
+        // New Group button
+        function newGroupButton() {
+            function onClick() {
+                setGroupFormType('register');
+                setShowGroupForm(true);
+            }
+
+            return <button className='btn' onClick={onClick}>New Group</button>
+        }
+
 
         return (
             <div className='admin-container'>
+                <GroupView formType={groupFormType} prevGroupData={groupFormData} show={showGroupForm} setShow={setShowGroupForm} />    
                 <div className='admin-section'>
                     <div><strong>Users</strong></div>
+                    <Link to='/register' className='btn'>New User</Link>
                     {sectionOutcomes({sectionOutcome: userLoadOutcome})}
                     {userCardView()}
                 </div>
 
                 <div className='admin-section'>
                     <div><strong>Groups</strong></div>
+                    {newGroupButton()}
                     {sectionOutcomes({sectionOutcome: groupLoadOutcome})}
                     {groupCardView()}
                 </div>

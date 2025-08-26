@@ -1,9 +1,3 @@
-.pop-up {
-    gap: 5px;
-    align-items: center;
-    max-width: 300px;
-}
-
 .form-login {
     display: flex;
     flex-direction: column;
