@@ -1,5 +1,14 @@
+#shell-container {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+
+    justify-content: space-between;
+}
+
 #shell-content {
     display: flex;
+    flex-grow: 2;
 }
 
 .sidebar {
@@ -55,9 +64,9 @@
 }
 
 #footer {
-    position: absolute;
-    bottom: 0;
-    left: 0;
+    /* position: sticky;
+    bottom: 0; */
+    /* left: 0; */
     width: 100%;
 
     display: flex;
