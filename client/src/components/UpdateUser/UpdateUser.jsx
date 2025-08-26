@@ -95,7 +95,6 @@ const UpdateUserView = () => {
     // Function called when user is updated
     const updateUser = async (e) => {
         e.preventDefault();
-        if(location)
         try {
             // Save form data in body of request
             const data = new FormData();

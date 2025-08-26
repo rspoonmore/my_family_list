@@ -207,6 +207,14 @@ const AdminPageView = () => {
                     setShowGroupForm(true);
                 }
 
+                let groupMemberships = [];
+                if(membershipData) {
+                    groupMemberships = membershipData.filter(m => m.groupid === Number(group.groupid))
+                }
+                if(!groupMemberships || groupMemberships.length === 0) {
+                    groupMemberships = [];
+                }
+
                 return (
                     <div key={`group-card-${group.groupid}`} className='section-card'>
                         <span className='card-title'>{group.groupname}</span>
@@ -216,6 +224,7 @@ const AdminPageView = () => {
                         <div className='card-button-div'>
                             <button className='btn btn-small' onClick={editButton}>Edit</button>
                             <button className='btn btn-small' onClick={deletePressed('group', group.groupid)}>Delete</button>
+                            <Link className='btn btn-small' to={`/memberships/${group.groupid}`} state={{memberships: groupMemberships}}>Memberships</Link>
                         </div>
                     </div>
                 )
