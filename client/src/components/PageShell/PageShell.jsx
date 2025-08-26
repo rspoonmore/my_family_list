@@ -42,6 +42,8 @@ const PageShell = ({mainView=null}) => {
 
     // Left Sidebar
     const sideBar = () => {
+        if(!showDropdown) {return <></>}
+
         const adminPage = () => {
             if(!currentUser) {return <></>}
             if(!currentUser.admin) {return <></>}
@@ -49,7 +51,7 @@ const PageShell = ({mainView=null}) => {
         }
 
         return (
-            <div className={showDropdown ? 'sidebar' : 'hidden'}>
+            <div className='sidebar'>
                 <Link to='/register' onClick={sideBarButtonHit}>Register</Link>
                 {adminPage()}
             </div>

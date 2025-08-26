@@ -56,7 +56,7 @@ const Header = ({dropdownLogo = null, userBadge = () => {return <></>}}) => {
                 {currentUser ? logoutButton() : loginButton()}
             </div>
             <LoginForm 
-                className={showLoginForm ? 'pop-up-right' : 'hidden'}
+                showLoginForm={showLoginForm}
                 setShowLoginForm={setShowLoginForm}
             />
         </div>

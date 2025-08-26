@@ -123,8 +123,9 @@ const GroupView = ({formType = 'register', prevGroupData = null, show = false, s
 
     // Create Form
     function groupForm() {
+        if(!show) {return <></>}
         return (
-        <div className={show ? 'pop-up' : 'hidden'}>
+        <div className={'pop-up'}>
             <span><strong>{formType === 'register' ? 'New' : 'Update'} Group</strong></span>
             {showErrors()}
             <form className='standard-form' onSubmit={submit}>

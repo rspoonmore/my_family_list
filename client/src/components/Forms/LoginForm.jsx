@@ -2,7 +2,7 @@ import './LoginForm.css'
 import { useState, useContext } from 'react'
 import { AuthContext } from '../../context/AuthContext'
 
-const LoginForm = ({className, setShowLoginForm}) => {
+const LoginForm = ({showLoginForm = false, setShowLoginForm = null}) => {
     const blankForm = {'email': '', 'password': ''};
     const [formData, setFormData] = useState(blankForm);
     const apiUrl = import.meta.env.VITE_API_URL;
@@ -67,8 +67,10 @@ const LoginForm = ({className, setShowLoginForm}) => {
         hideLogin();
     }
 
+    if(!showLoginForm) {return <></>}
+
     return (
-        <div className={className}>
+        <div className='pop-up-right'>
             <span>Log In</span>
             {LoginErrors()}
             <form className='standard-form' onSubmit={login}>
