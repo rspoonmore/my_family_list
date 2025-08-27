@@ -1,8 +1,7 @@
 const userDB = require('../db/queries/userQueries');
 const db = require('../db/queries/groupQueries');
 const authenticator = require('../passport/authenticator');
-const {generateErrorJsonResponse} = require('./errorJsonResGenerator');
-const { query } = require('../db/pool');
+const {generateErrorJsonResponse} = require('../errorJsonResGenerator');
 
 async function isUserAdmin(req) {
     try {

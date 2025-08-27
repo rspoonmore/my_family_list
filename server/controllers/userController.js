@@ -5,7 +5,7 @@ const passport = require('passport');
 const strategy = require('../passport/jwtStrategy');
 const authenticator = require('../passport/authenticator');
 const cookieOptions = require('../passport/cookieOptions');
-const {generateErrorJsonResponse} = require('./errorJsonResGenerator');
+const {generateErrorJsonResponse} = require('../errorJsonResGenerator');
 
 passport.use('jwt', strategy);
 

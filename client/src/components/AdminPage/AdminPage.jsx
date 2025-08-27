@@ -103,7 +103,7 @@ const AdminPageView = () => {
             .then(res => {
                 // successful
                 if(res.success) {
-                    if(res.users) {setUserData(res.users)}
+                    setUserData(res.users || [])
                 }
                 // update was not successful
                 else {
@@ -130,7 +130,7 @@ const AdminPageView = () => {
             .then(res => {
                 // successful
                 if(res.success) {
-                    if(res.groups) {setGroupData(res.groups)}
+                    setGroupData(res.groups || [])
                 }
                 // update was not successful
                 else {
@@ -143,25 +143,46 @@ const AdminPageView = () => {
     }
 
     // Load Membership Data
+    const loadMemberships = () => {
+        try {
+            console.log('Loading Memberships')
+            fetch(`${apiUrl}/memberships`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include'
+            })
+            .then(res => res.json())
+            .then(res => {
+                // successful
+                if(res.success) {
+                    setMembershipData(res.memberships || [])
+                }
+                // update was not successful
+                else {
+                    setMembershipData(res);
+                }
+            })
+        } catch(error) {
+            console.log(error)
+        }
+    }
 
     // Load List Data
 
     // Check if user is an admin, if so, load data
     const loadPage = () => {
         console.log('Loading Page');
-        // Check that current user exists
-        if(!currentUser) {
-            setUpdateAllowed(false)
-            return;
-        }
+
         // Check that current user is allowed to make the update
-        if(!currentUser.admin) {
-            setUpdateAllowed(false);
-            return;
-        }
+        const isAdmin = currentUser?.admin;
+        setUpdateAllowed(isAdmin || false);
+        if(!isAdmin) {return null}
 
         loadUsers();
         loadGroups();
+        loadMemberships();
     }
 
     // Generate View
@@ -224,7 +245,7 @@ const AdminPageView = () => {
                         <div className='card-button-div'>
                             <button className='btn btn-small' onClick={editButton}>Edit</button>
                             <button className='btn btn-small' onClick={deletePressed('group', group.groupid)}>Delete</button>
-                            <Link className='btn btn-small' to={`/memberships/${group.groupid}`} state={{memberships: groupMemberships}}>Memberships</Link>
+                            <Link className='btn btn-small' to={`/memberships/${group.groupid}`} state={{memberships: groupMemberships, groupname: group.groupname}}>Memberships</Link>
                         </div>
                     </div>
                 )
@@ -262,6 +283,7 @@ const AdminPageView = () => {
                     <div><strong>Groups</strong></div>
                     {newGroupButton()}
                     {sectionOutcomes({sectionOutcome: groupLoadOutcome})}
+                    {sectionOutcomes({sectionOutcome: membershipLoadOutcome})}
                     {groupCardView()}
                 </div>
             </div>
