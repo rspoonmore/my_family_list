@@ -27,13 +27,12 @@ async function isUserAdmin(req) {
 
 
 async function membershipCreate(req, res) {
-    const { groupid, userid, startDate, endDate } = req.body;
-
+    const body = req.body;
     // Check that required fields are present
-    if(!groupid) {return generateErrorJsonResponse('groupid was not provided')}
-    if(!userid) {return generateErrorJsonResponse('userid was not provided')}
-    if(!startDate) {return generateErrorJsonResponse('startDate was not provided')}
-    if(!endDate) {return generateErrorJsonResponse('endDate was not provided')}
+    if(!body?.listid) {return generateErrorJsonResponse('listid was not provided')};
+    if(!body?.userid) {return generateErrorJsonResponse('userid was not provided')};
+
+    const { listid, userid } = body;
 
     // Run admin check
     const adminCheck = isUserAdmin(req);
@@ -41,7 +40,7 @@ async function membershipCreate(req, res) {
 
     try {
         // create membership
-        const queryResults = await db.membershipCreate({ groupid, userid, startDate, endDate });
+        const queryResults = await db.membershipCreate({ listid, userid });
         if(!queryResults) { return res.json(generateErrorJsonResponse('Failure in membershipCreate query to return anyting.')) }
         if(!queryResults.success) {
             return res.json(generateErrorJsonResponse(queryResults.message))
@@ -58,15 +57,14 @@ async function membershipCreate(req, res) {
 
 async function membershipEdit(req, res) {
     const params = req.params;
-    const membershipid = Number(params.membershipid);
-    const { groupid, userid, startDate, endDate } = req.body;
-
+    const body = req.body;
     // Check that required fields are present
-    if(!membershipid) {return generateErrorJsonResponse('membershipid was not provided')}
-    if(!groupid) {return generateErrorJsonResponse('groupid was not provided')}
-    if(!userid) {return generateErrorJsonResponse('userid was not provided')}
-    if(!startDate) {return generateErrorJsonResponse('startDate was not provided')}
-    if(!endDate) {return generateErrorJsonResponse('endDate was not provided')}
+    if(!params?.membershipid) {return generateErrorJsonResponse('membershipid was not provided')};
+    if(!body?.listid) {return generateErrorJsonResponse('listid was not provided')};
+    if(!body?.userid) {return generateErrorJsonResponse('userid was not provided')};
+
+    const membershipid = Number(params.membershipid);
+    const { listid, userid } = body;
 
     // Run admin check
     const adminCheck = isUserAdmin(req);
@@ -74,7 +72,7 @@ async function membershipEdit(req, res) {
 
     try {
         // edit membership
-        const queryResults = await db.membershipEdit({ membershipid, groupid, userid, startDate, endDate });
+        const queryResults = await db.membershipEdit({ membershipid, listid, userid });
         if(!queryResults) { return res.json(generateErrorJsonResponse('Failure in membershipEdit query to return anyting.')) }
         if(!queryResults.success) {
             return res.json(generateErrorJsonResponse(queryResults.message))
@@ -96,10 +94,10 @@ async function membershipEdit(req, res) {
 
 async function membershipGet(req, res) {
     const params = req.params;
-    const membershipid = Number(params.membershipid);
-
     // Check that required fields are present
-    if(!membershipid) {return generateErrorJsonResponse('membershipid was not provided')};
+    if(!params?.membershipid) {return generateErrorJsonResponse('membershipid was not provided')};
+
+    const membershipid = Number(params.membershipid);
 
     // Run admin check
     const adminCheck = isUserAdmin(req);
@@ -151,10 +149,10 @@ async function membershipGetAll(req, res) {
 
 async function membershipDelete(req, res) {
     const params = req.params;
-    const membershipid = Number(params.membershipid);
-
     // Check that required fields are present
-    if(!membershipid) {return generateErrorJsonResponse('membershipid was not provided')};
+    if(!params?.membershipid) {return generateErrorJsonResponse('membershipid was not provided')};
+    
+    const membershipid = Number(params.membershipid);
 
     // Run admin check
     const adminCheck = isUserAdmin(req);

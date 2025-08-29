@@ -13,22 +13,12 @@ CREATE TABLE users (
 );
 `;
 
-const groupsSetup = `
-DROP TABLE IF EXISTS groups;
-CREATE TABLE groups (
-    groupid INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    groupName VARCHAR ( 255 )
-);
-`
-
 const membershipSetup = `
 DROP TABLE IF EXISTS memberships;
 CREATE TABLE memberships (
     membershipid INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    groupid INTEGER,
-    userid INTEGER,
-    startDate DATE,
-    endDate DATE
+    listid INTEGER,
+    userid INTEGER
 );
 `;
 
@@ -36,7 +26,6 @@ const listSetup = `
 DROP TABLE IF EXISTS lists;
 CREATE TABLE lists (
     listid INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    groupid INTEGER,
     listName VARCHAR ( 255 ),
     eventDate DATE
 );
@@ -46,8 +35,7 @@ const itemsSetup = `
 DROP TABLE IF EXISTS items;
 CREATE TABLE items (
     itemid INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    listid INTEGER,
-    userid INTEGER,
+    membershipid INTEGER,
     itemName VARCHAR ( 255 ),
     itemLink VARCHAR ( 5000 ),
     itemComments VARCHAR ( 5000 ),
@@ -67,8 +55,7 @@ async function main() {
   });
   await client.connect();
 
-  await client.query(usersSetup);
-  await client.query(groupsSetup);
+//   await client.query(usersSetup);
   await client.query(membershipSetup);
   await client.query(listSetup);
   await client.query(itemsSetup);
