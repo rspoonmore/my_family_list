@@ -55,43 +55,6 @@ async function membershipCreate(req, res) {
     }
 }
 
-async function membershipEdit(req, res) {
-    const params = req.params;
-    const body = req.body;
-    // Check that required fields are present
-    if(!params?.membershipid) {return generateErrorJsonResponse('membershipid was not provided')};
-    if(!body?.listid) {return generateErrorJsonResponse('listid was not provided')};
-    if(!body?.userid) {return generateErrorJsonResponse('userid was not provided')};
-
-    const membershipid = Number(params.membershipid);
-    const { listid, userid } = body;
-
-    // Run admin check
-    const adminCheck = isUserAdmin(req);
-    if(!adminCheck) {return res.json(adminCheck)}
-
-    try {
-        // edit membership
-        const queryResults = await db.membershipEdit({ membershipid, listid, userid });
-        if(!queryResults) { return res.json(generateErrorJsonResponse('Failure in membershipEdit query to return anyting.')) }
-        if(!queryResults.success) {
-            return res.json(generateErrorJsonResponse(queryResults.message))
-        }
-
-        // Get edited membership
-        const editedMembership = await db.membershipGet({membershipid});
-
-        return res.json({
-            success: true,
-            message: 'Membership Edited!',
-            membership: editedMembership
-        })
-    } catch(error) {
-        console.log(error)
-        return res.json(generateErrorJsonResponse(`membershipEdit hit error: ${error}`))
-    }
-}
-
 async function membershipGet(req, res) {
     const params = req.params;
     // Check that required fields are present
@@ -177,7 +140,6 @@ async function membershipDelete(req, res) {
 
 module.exports = {
     membershipCreate,
-    membershipEdit,
     membershipGet,
     membershipGetAll,
     membershipDelete

@@ -4,9 +4,9 @@ const listRouter = Router();
 
 listRouter.post('/', listController.listCreate);
 listRouter.get('/', listController.listGetAll);
+listRouter.get('/:listid', listController.listGet);
+listRouter.put('/:listid', listController.listUpdate);
 
-// listRouter.put('/:listid', listController.listEdit);
-// listRouter.get('/:listid', listController.listGet);
 // listRouter.delete('/:listid', listController.listDelete);
 
 module.exports = listRouter;

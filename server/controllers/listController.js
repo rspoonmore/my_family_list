@@ -33,7 +33,6 @@ module.exports.listCreate = async(req, res) => {
 
     const { listName, eventDate } = req.body;
 
-
     // Run admin check
     const adminCheck = isUserAdmin(req);
     if(!adminCheck) {return res.json(adminCheck)}
@@ -75,5 +74,66 @@ module.exports.listGetAll = async (req, res) => {
     } catch(error) {
         console.log(error)
         return res.json(generateErrorJsonResponse(`listGetAll hit error: ${error}`))
+    }
+}
+
+module.exports.listGet = async (req, res) => {
+    // Check that required fields are present
+    if(!req.params?.listid) {return generateErrorJsonResponse('listid was not provided')}
+    // Run admin check
+    const adminCheck = isUserAdmin(req);
+    if(!adminCheck) {return res.json(adminCheck)}
+    try {
+        // Get list
+        const queryResults = await db.listGet({listid: Number(req.params.listid), detailed: req.query?.detailed === 'y'});
+        if(!queryResults) { return res.json(generateErrorJsonResponse('Failure in listGet query to return anyting.')) }
+        if(!queryResults.success) {
+            return res.json(generateErrorJsonResponse(queryResults.message))
+        }
+        return res.json({
+            success: true,
+            message: 'list found!',
+            list: queryResults.list || []
+        })
+    } catch(error) {
+        console.log(error)
+        return res.json(generateErrorJsonResponse(`listGet hit error: ${error}`))
+    }
+}
+
+module.exports.listUpdate = async (req, res) => {
+    const params = req.params;
+    const body = req.body;
+    // Check that required fields are present
+    if(!params?.listid) {return generateErrorJsonResponse('listid was not provided')}
+    if(!body?.listName) {return generateErrorJsonResponse('listName was not provided')}
+    if(!body?.eventDate) {return generateErrorJsonResponse('eventDate was not provided')}
+
+    const { listName, eventDate } = req.body;
+    const { listid } = params;
+
+    // Run admin check
+    const adminCheck = isUserAdmin(req);
+    if(!adminCheck) {return res.json(adminCheck)}
+
+    try {
+        // edit list
+        const queryResults = await db.listUpdate({ listid, listName, eventDate });
+        if(!queryResults) { return res.json(generateErrorJsonResponse('Failure in listUpdate query to return anyting.')) }
+        if(!queryResults.success) {
+            return res.json(generateErrorJsonResponse(queryResults.message))
+        }
+
+        // Get edited list
+        const editedList = await db.listGet({listid});
+
+        return res.json({
+            success: true,
+            message: 'List Updated!',
+            editedList: editedList
+        })
+    } catch(error) {
+        console.log(error)
+        return res.json(generateErrorJsonResponse(`listUpdate hit error: ${error}`))
     }
 }
