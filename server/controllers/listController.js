@@ -44,9 +44,18 @@ module.exports.listCreate = async(req, res) => {
         if(!queryResults.success) {
             return res.json(generateErrorJsonResponse(queryResults.message))
         }
+
+        // retrieve created list
+        const newListQueryResults = await db.listGetByName({ listName });
+        if(!newListQueryResults) { return res.json(generateErrorJsonResponse('Failure in listGetByName query to return anyting.')) }
+        if(!newListQueryResults.success) {
+            return res.json(generateErrorJsonResponse(newListQueryResults.message))
+        }
+
         return res.json({
             success: true,
-            message: 'list created!'
+            message: 'list created!',
+            list: newListQueryResults?.list || null
         })
     } catch(error) {
         console.log(error)
@@ -135,5 +144,29 @@ module.exports.listUpdate = async (req, res) => {
     } catch(error) {
         console.log(error)
         return res.json(generateErrorJsonResponse(`listUpdate hit error: ${error}`))
+    }
+};
+
+module.exports.listDelete = async (req, res) => {
+    const params = req.params;
+    // Check that required fields are present
+    if(!params?.listid) {return generateErrorJsonResponse('listid was not provided')}
+    const { listid } = params;
+
+    // Run admin check
+    const adminCheck = isUserAdmin(req);
+    if(!adminCheck) {return res.json(adminCheck)}
+
+    try {
+        // delete list
+        await db.listDelete({ listid });
+
+        return res.json({
+            success: true,
+            message: 'List Deleted!'
+        })
+    } catch(error) {
+        console.log(error)
+        return res.json(generateErrorJsonResponse(`listDelete hit error: ${error}`))
     }
 }

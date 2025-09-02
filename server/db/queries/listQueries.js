@@ -63,9 +63,27 @@ module.exports.listGet = async({listid=null, detailed=false}) => {
         ;`
     }
 
-    console.log(listQuery);
-
     const { rows } = await pool.query(listQuery, [listid]);
+    if(!rows) {return null}
+    return {
+        'success': true,
+        'list': rows[0] || null
+    };
+}
+
+module.exports.listGetByName = async({listName=null}) => {
+    if(!listName) {return generateErrorJsonResponse('listName was not provided')};
+
+    const listQuery = `
+        SELECT l.listid
+            , l.listname
+            , TO_CHAR(l.eventdate, 'YYYY-MM-DD') as eventDate
+        FROM lists as l
+        WHERE l.listName = $1
+        ORDER BY l.listid
+        ;`
+
+    const { rows } = await pool.query(listQuery, [listName]);
     if(!rows) {return null}
     return {
         'success': true,

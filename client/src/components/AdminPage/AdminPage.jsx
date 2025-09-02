@@ -85,6 +85,31 @@ const AdminPage = () => {
     }
 
     // Load List Data
+    const loadLists = () => {
+        try {
+            console.log('Loading Lists')
+            fetch(`${apiUrl}/lists`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include'
+            })
+            .then(res => res.json())
+            .then(res => {
+                // successful
+                if(res.success) {
+                    setListData(res.lists || [])
+                }
+                // update was not successful
+                else {
+                    setListLoadOutcome(res);
+                }
+            })
+        } catch(error) {
+            console.log(error)
+        }
+    }
 
     // Check if user is an admin, if so, load data
     const loadPage = () => {
@@ -96,6 +121,7 @@ const AdminPage = () => {
         if(!isAdmin) {return null}
 
         loadUsers();
+        loadLists();
     }
 
     // Generate View
@@ -130,6 +156,33 @@ const AdminPage = () => {
             )
         }
 
+        // Show list data
+        const listCardView = () => {
+            if(!listData) {return <></>}
+
+            function listCard(list) {
+                return (
+                    <div key={`list-card-${list.listid}`} className='section-card'>
+                        <span className='card-title'>{list.listName || list.listname}</span>
+                        <div className='card-detail-div'>
+                            <span className='card-details'>ID: {list.listid}</span>
+                            <span className='card-details'>Event Date: {list.eventDate || list.eventdate}</span>
+                        </div>
+                        <div className='card-button-div'>
+                            <Link className='btn btn-small' to={`/lists/${list.listid}/update`}>Edit</Link>
+                            <button className='btn btn-small' onClick={deletePressed('list', list.listid)}>Delete</button>
+                        </div>
+                    </div>
+                )
+            }
+
+            return (
+                <div className='section-card-container'>
+                    {listData.map(list => (listCard(list)))}
+                </div>
+            )
+        }
+
 
         return (
             <div className='admin-container'> 
@@ -138,6 +191,13 @@ const AdminPage = () => {
                     <Link to='/register' className='btn'>New User</Link>
                     {sectionOutcomes({sectionOutcome: userLoadOutcome})}
                     {userCardView()}
+                </div>
+
+                <div className='admin-section'>
+                    <div><strong>Lists</strong></div>
+                    <Link to='/lists/register' className='btn'>New List</Link>
+                    {sectionOutcomes({sectionOutcome: listLoadOutcome})}
+                    {listCardView()}
                 </div>
             </div>
         )
