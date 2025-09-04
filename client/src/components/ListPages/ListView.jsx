@@ -41,11 +41,7 @@ const ListView = () => {
             const res = await response.json();
             
             if(res?.success) {
-                setPageState(prev => ({
-                    ...prev,
-                    listData: res?.list || []
-                }))
-                return null;
+                return processListData(res?.list || [])
             }
             
             return setOutcome(res);
@@ -55,6 +51,41 @@ const ListView = () => {
             console.error('Error creating list:', error);
             return setOutcome({ success: false, message: 'Error Creating List' });
         }
+    }
+
+    const processListData = (listRows) => {
+        if(listRows.length === 0) {return {}}
+        let data = {};
+        data['listName'] = listRows[0]?.listname || '';
+        data['listid'] = listRows[0]?.listid || '';
+        data['eventDate'] = listRows[0]?.eventdate || '';
+        data['users'] = [];
+        listRows.forEach(row => {
+            if(!data?.users.some(user => user.userid === Number(row.userid))) { 
+                // New User
+                data.users.push({
+                    'userid': Number(row.userid), 
+                    'userName': `${row.firstname || ''} ${row.lastname || ''}`,
+                    'email': row.email || '',
+                    'items': []
+                })
+            }
+            if(row.itemid) {
+                // User has items
+                const user = data?.users.find(user => user.userid === Number(row.userid));
+                if (user) {
+                    user.items = [...user.items, {
+                        'itemid': Number(row.itemid),
+                        'itemName': row.itemName || '',
+                        'itemLink': row.itemlink || '',
+                        'itemComments': row.itemcomments || '',
+                        'itemQtyReq': Number(row.itemqtyreq || 0),
+                        'itemQtyPurch': Number(row.itemqtypurch || 0)
+                    }]
+                }
+            }
+        })
+        return setPageState(prev => ({...prev, listData: data}))
     }
 
     const loadPage = () => {
