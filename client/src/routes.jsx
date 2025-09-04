@@ -4,6 +4,8 @@ import UpdateUser from "./components/UpdateUser/UpdateUser.jsx";
 import ChangePassword from "./components/ChangePassword/ChangePassword.jsx";
 import AdminPage from "./components/AdminPage/AdminPage.jsx";
 import ListNewPage from "./components/ListPages/ListNewPage.jsx";
+import ListUpdatePage from "./components/ListPages/ListUpdatePage.jsx";
+import ListView from "./components/ListPages/ListView.jsx";
 
 const routes = [
     {
@@ -29,6 +31,14 @@ const routes = [
     {
         path: '/lists/register',
         element: <ListNewPage />
+    },
+    {
+        path: '/lists/:listid/update',
+        element: <ListUpdatePage />
+    },
+    {
+        path: '/lists/:listid',
+        element: <ListView />
     }
 ];
 

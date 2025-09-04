@@ -65,9 +65,11 @@ module.exports.listGet = async({listid=null, detailed=false}) => {
 
     const { rows } = await pool.query(listQuery, [listid]);
     if(!rows) {return null}
+    const result = (detailed ? rows : rows[0]) || null;
+
     return {
         'success': true,
-        'list': rows[0] || null
+        'list': result
     };
 }
 
@@ -160,7 +162,7 @@ module.exports.listUpdate = async ({listid=null, listName=null, eventDate=null})
     }
 };
 
-module.exports.listDelete = async ({listid=null}) => {
+module.exports.listDelete = async ({listid=null, deep=true}) => {
     // Check that required fields are present
     if(!listid) {return generateErrorJsonResponse('listid was not provided')};
 
@@ -168,5 +170,9 @@ module.exports.listDelete = async ({listid=null}) => {
     await pool.query(`
         DELETE FROM lists 
         WHERE listid = $1;
-        `, [listid])
+        `, [listid]);
+
+    if(deep) {
+        await pool.query(`DELETE FROM memberships WHERE listid = $1;`, [listid]);
+    }
 }

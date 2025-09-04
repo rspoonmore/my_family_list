@@ -52,7 +52,6 @@ const ListNewPage = () => {
     const { currentUser } = useContext(AuthContext);
     const [pageState, setPageState] = useState({
         'isAllowed': false,
-        'isEditingMembership': false,
         'potentialUsers': []
     })
 
