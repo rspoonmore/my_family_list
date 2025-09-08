@@ -13,9 +13,29 @@ module.exports.itemCreate = async ({membershipid=null, itemName=null, itemLink='
         VALUES ($1, $2, $3, $4, $5, $6, current_date, current_date);
         `, [Number(membershipid), itemName, itemLink, itemComments, Number(itemQtyReq), Number(itemQtyPurch)]);
 
+    const { rows } = await pool.query(`
+        SELECT itemid
+            , membershipid
+            , itemName
+            , itemLink
+            , itemComments
+            , itemQtyReq
+            , itemQtyPurch
+            , TO_CHAR(createDate, 'YYYY-MM-DD') as createDate
+            , TO_CHAR(lastUpdateDate, 'YYYY-MM-DD') as lastUpdateDate
+        FROM items 
+        WHERE membershipid = $1
+            and itemName = $2
+            and itemLink = $3
+            and itemComments = $4
+        ORDER BY itemid desc
+        limit 1
+        ;`, [Number(membershipid), itemName, itemLink, itemComments])
+    
     return {
         'success': true,
-        'message': 'item created'
+        'message': 'item created',
+        'item': rows[0] || null
     }
 }
 

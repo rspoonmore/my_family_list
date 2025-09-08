@@ -44,7 +44,8 @@ module.exports.itemCreate = async(req, res) => {
 
         return res.json({
             success: true,
-            message: 'Item created!'
+            message: 'Item created!',
+            'item': queryResults?.item || null
         })
     } catch(error) {
         console.log(error)
