@@ -16,13 +16,30 @@ const useListView = () => {
     return {setOutcome, renderOutcome, listid}
 }
 
+const ItemView = ({item=null}) => {
+    if(!item) {return null}
+
+    const renderLink = () => {
+        if(item?.itemLink || "" === "") {return null}
+        return <a href={item.itemLink}>Link</a>
+    }
+
+    return (
+        <div key={`item-view-${item.itemid}`} className='flex flex-col'>
+            <div><strong>{item.itemName || ""}</strong></div>
+            <div>{renderLink()}</div>
+            <div>{item.itemComments || ""}</div>
+        </div>
+    )
+}
+
 const ListView = () => {
     const {setOutcome, renderOutcome, listid} = useListView();
 
     const apiUrl = import.meta.env.VITE_API_URL;
     const { currentUser } = useContext(AuthContext);
     const [pageState, setPageState] = useState({
-        'listData': [],
+        'listDataRaw': [],
     })
 
     // Load the List from API call
@@ -41,7 +58,7 @@ const ListView = () => {
             const res = await response.json();
             
             if(res?.success) {
-                return processListData(res?.list || [])
+                return setPageState(prev => ({...prev, listDataRaw: res?.list || [], listData: processListData(res?.list || [])}))
             }
             
             return setOutcome(res);
@@ -76,16 +93,16 @@ const ListView = () => {
                 if (user) {
                     user.items = [...user.items, {
                         'itemid': Number(row.itemid),
-                        'itemName': row.itemName || '',
-                        'itemLink': row.itemlink || '',
-                        'itemComments': row.itemcomments || '',
-                        'itemQtyReq': Number(row.itemqtyreq || 0),
-                        'itemQtyPurch': Number(row.itemqtypurch || 0)
+                        'itemName': row.itemName || row.itemname || '',
+                        'itemLink': row.itemLink || row.itemlink || '',
+                        'itemComments': row.itemComments || row.itemcomments || '',
+                        'itemQtyReq': Number(row.itemqtyreq || row.itemQtyReq || 0),
+                        'itemQtyPurch': Number(row.itemqtypurch || row.itemQtyPurch || 0)
                     }]
                 }
             }
         })
-        return setPageState(prev => ({...prev, listData: data}))
+        return data
     }
 
     const loadPage = () => {
@@ -94,12 +111,32 @@ const ListView = () => {
 
     useEffect(loadPage, [currentUser])
 
+    const UserView = ({user}) => {
+        return (
+            <div key={`user-${user.userid}`} className='flex flex-col m-5'>
+                <div><strong>{user.userName || user.email || "Unnamed User"}</strong></div>
+                {user.items.map(item => (ItemView({item})))}
+            </div>
+        )
+    }
+
+    const renderUserViews = () => {
+        return (
+            <div className='flex flex-col'>
+                {pageState.listData?.users.map(user => {
+                    return UserView({user})
+                })}
+            </div>
+        )
+    }
+
     const renderPage = () => {
         return (
             <div className='flex flex-col p-5 m-5'>
-                <h1>List</h1>
+                <h1><strong>List: </strong>{pageState?.listData?.listName || ""}</h1>
+                <h2><strong>Event Date: </strong>{pageState?.listData?.eventDate || ""}</h2>
                 {renderOutcome()}
-                <div>{JSON.stringify(pageState?.listData || [])}</div>
+                {renderUserViews()}
             </div>
         )
     }
