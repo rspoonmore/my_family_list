@@ -5,6 +5,7 @@ require('dotenv').config();
 const userRouter = require('./routes/userRouter');
 const membershipRouter = require('./routes/membershipRouter');
 const listRouter = require('./routes/listRouter');
+const itemRouter = require('./routes/itemRouter');
 
 const app = express();
 app.use(express.urlencoded({ extended: true }));
@@ -36,5 +37,6 @@ app.get('/', (req, res) => {
 app.use('/users', userRouter);
 app.use('/memberships', membershipRouter);
 app.use('/lists', listRouter);
+app.use('/items', itemRouter);
 
 app.listen(process.env.PORT || 5000, () => {console.log(`Listening on port ${process.env.PORT || 5000}`)});
