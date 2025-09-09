@@ -1,6 +1,6 @@
 import ListItemView from './ListItemView';
 
-const ListUserView = ({user=null, membershipid=null, currentUser=null, showPurchased=false}) => {
+const ListUserView = ({user=null, membershipid=null, currentUser=null, showPurchased=false, formType=null, setFormType=null, formData={}, updateForm=null, populateForm=null, clearForm=null}) => {
     if(!user) {return null}
     if(!membershipid) {return null}
     const showPurchasedSetting = (!currentUser || Number(currentUser.userid) !== Number(user.userid) || showPurchased);
@@ -8,7 +8,13 @@ const ListUserView = ({user=null, membershipid=null, currentUser=null, showPurch
     
     const renderAddItemButton = () => {
         if(!currentUser.admin && Number(currentUser.userid) !== Number(user.userid)) {return null}
-        return <button className='btn'>Add Item</button>
+
+        const onClick = () => {
+            updateForm('membershipid', Number(membershipid))
+            setFormType('new');
+        }
+
+        return <button className='btn' onClick={onClick}>Add Item</button>
     }
 
     return (

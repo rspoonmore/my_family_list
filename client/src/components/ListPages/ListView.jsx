@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext'
 import PageShell from '../PageShell/PageShell';
 import ListUserView from './ListUserView';
-
+import ItemForm from '../Forms/ItemForm';
 
 const useListView = () => {
     const [outcome, setOutcome] = useState(null);
@@ -38,11 +38,11 @@ const useListView = () => {
         setFormType(null);
     }
 
-    return {setOutcome, renderOutcome, showPurchased, setShowPurchased, listid, formData, updateForm, populateForm, clearForm, formType}
+    return {setOutcome, renderOutcome, showPurchased, setShowPurchased, listid, formData, updateForm, populateForm, clearForm, formType, setFormType}
 }
 
 const ListView = () => {
-    const {setOutcome, renderOutcome, showPurchased, setShowPurchased, listid, formData, updateForm, populateForm, clearForm, formType} = useListView();
+    const {setOutcome, renderOutcome, showPurchased, setShowPurchased, listid, formData, updateForm, populateForm, clearForm, formType, setFormType} = useListView();
 
     const apiUrl = import.meta.env.VITE_API_URL;
     const { currentUser } = useContext(AuthContext);
@@ -153,6 +153,12 @@ const ListView = () => {
                         membershipid={pageState.memberCrosswalk[Number(user.userid)]}
                         currentUser={currentUser}
                         showPurchased={showPurchased}
+                        formType={formType}
+                        setFormType={setFormType}
+                        formData={formData}
+                        updateForm={updateForm}
+                        clearForm={clearForm}
+                        populateForm={populateForm}
                         />
                 })}
             </div>
@@ -162,6 +168,12 @@ const ListView = () => {
     const renderPage = () => {
         return (
             <div className='flex flex-col p-5 m-5'>
+                <ItemForm
+                    formType={formType}
+                    formData={formData}
+                    updateForm={updateForm}
+                    clearForm={clearForm}
+                />
                 <h1><strong>List: </strong>{pageState?.listData?.listName || ""}</h1>
                 <h2><strong>Event Date: </strong>{pageState?.listData?.eventDate || ""}</h2>
                 {renderShowCountButton()}
