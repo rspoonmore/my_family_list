@@ -2,13 +2,15 @@ import { useContext, useState, useEffect} from 'react';
 import { useParams } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext'
 import PageShell from '../PageShell/PageShell';
-import ListItemView from './ListItemView';
-import { Link } from 'react-router-dom';
+import ListUserView from './ListUserView';
+
 
 const useListView = () => {
     const [outcome, setOutcome] = useState(null);
     const [showPurchased, setShowPurchased] = useState(false);
-    const [memberCrosswalk, setMemberCrosswalk] = useState({});
+    const blankItemForm = {'membershipid': '', 'itemName': '', 'itemLink': '', 'itemComments': '', 'itemQtyReq': 0, 'itemQtyPuch': 0}
+    const [formData, setFormData] = useState(blankItemForm);
+    const [formType, setFormType] = useState(null);
     const {listid} = useParams();
 
     const renderOutcome = () => {
@@ -17,11 +19,30 @@ const useListView = () => {
         return <div className={className}>{outcome.message}</div>
     }
 
-    return {setOutcome, renderOutcome, showPurchased, setShowPurchased, listid}
+    const updateForm = (key, value) => {
+        setFormData(prev => ({
+            ...prev,
+            [key]: value
+        }))
+    }
+
+    const populateForm = (item) => {
+        setFormData(prev => ({
+            ...prev,
+            item
+        }))
+    }
+
+    const clearForm = () => {
+        setFormData(blankItemForm);
+        setFormType(null);
+    }
+
+    return {setOutcome, renderOutcome, showPurchased, setShowPurchased, listid, formData, updateForm, populateForm, clearForm, formType}
 }
 
 const ListView = () => {
-    const {setOutcome, renderOutcome, showPurchased, setShowPurchased, listid} = useListView();
+    const {setOutcome, renderOutcome, showPurchased, setShowPurchased, listid, formData, updateForm, populateForm, clearForm, formType} = useListView();
 
     const apiUrl = import.meta.env.VITE_API_URL;
     const { currentUser } = useContext(AuthContext);
@@ -121,47 +142,18 @@ const ListView = () => {
         return <div><button className='btn' onClick={changeShowPurchased}>{buttonDisplayText}</button></div>
     }
 
-    const renderAddItemButton = (userid) => {
-        if(!userid) {return null};
-        const membershipid = pageState.memberCrosswalk[Number(userid)];
-        if(!membershipid) {return null};
-        return <Link className='btn' to={`/items/new?membershipid=${membershipid}`}>Add Item</Link>
-    }
-
-    const UserView = ({user}) => {
-        const showPurchasedSetting = (!currentUser || Number(currentUser.userid) !== Number(user.userid) || showPurchased);
-        const isCurrentUserSetting = currentUser && Number(currentUser.userid) === Number(user.userid)
-        const addItemButton = () => {
-            if(!currentUser) {return null}
-            if(!currentUser.admin && Number(currentUser.userid) !== Number(user.userid)) {return null}
-            return renderAddItemButton(Number(user.userid))
-        }
-
-        return (
-            <div key={`user-${user.userid}`} className='flex flex-col m-5'>
-                <div className='flex gap-3'>
-                    <strong>{user.userName || user.email || "Unnamed User"}</strong>
-                    {addItemButton()}
-                </div>
-                {user.items.map(item => {
-                    return <ListItemView 
-                        key={`item-view-${item.itemid}`} 
-                        item={item} 
-                        showPurchased={showPurchasedSetting} 
-                        isCurrentUser={isCurrentUserSetting} 
-                        isAdmin={!!(currentUser?.admin)}
-                        />
-                })}
-            </div>
-        )
-    }
-
     const renderUserViews = () => {
         if(!pageState.listData?.users || pageState.listData?.users.length === 0) {return null}
         return (
             <div className='flex flex-col'>
                 {pageState.listData?.users.map(user => {
-                    return UserView({user})
+                    return <ListUserView
+                        key={`user-${user.userid}`} 
+                        user={user}
+                        membershipid={pageState.memberCrosswalk[Number(user.userid)]}
+                        currentUser={currentUser}
+                        showPurchased={showPurchased}
+                        />
                 })}
             </div>
         )
