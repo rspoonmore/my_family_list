@@ -1,12 +1,14 @@
-const ItemForm = ({formType=null, formData={}, updateForm=null, clearForm=null}) => {
-    if(!formType) {return null}
-    if(!formData) {return null}
-    if(!updateForm) {return null}
-    if(!clearForm) {return null}
+import { useContext } from 'react';
+import { FormContext } from '../../context/ItemFormContext';
+
+const ItemForm = () => {
+    const { formState, updateForm, clearForm, populateForm, setFormType } = useContext(FormContext);
+    if(!formState?.formType) {return null}
+    if(!formState?.formData) {return null}
 
     const onSubmit = async (e) => {
         e.preventDefault();
-        console.log(formData);
+        console.log(formState.formData);
 
         clearForm();
     }
@@ -19,7 +21,7 @@ const ItemForm = ({formType=null, formData={}, updateForm=null, clearForm=null})
                     id='itemName' 
                     name='itemName' 
                     type='text' 
-                    value={formData['itemName']}
+                    value={formState.formData['itemName']}
                     onChange={(e) => {updateForm('itemName', e.target.value)}}
                 required/>
                 <div className='standard-form-btns'>
