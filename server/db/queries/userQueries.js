@@ -125,8 +125,6 @@ async function userDelete({userid=null, deep=true}) {
     if(deep) {
         // Memberhsips
         await pool.query(`DELETE FROM memberships where userid = $1;`, [userid]);
-        // Users 
-        await pool.query(`DELETE FROM items where userid = $1;`, [userid]);
     }
     return {
         'success': true,
