@@ -1,5 +1,11 @@
-const ListItemView = ({item=null, showPurchased=false, isCurrentUser=false, isAdmin=false}) => {
+import { useContext } from 'react';
+import { ListContext } from '../../context/ListContext';
+
+const ListItemView = ({listid=null, userid=null, item=null, showPurchased=false, isCurrentUser=false, isAdmin=false}) => {
     if(!item) {return null}
+    if(!listid) {return null}
+    if(!userid) {return null}
+    const { formType, updateForm, clearForm, populateForm, setFormType } = useContext(ListContext);
 
     const renderLink = () => {
         if((item?.itemLink || item?.itemlink || "") === "") {return null}
@@ -14,25 +20,43 @@ const ListItemView = ({item=null, showPurchased=false, isCurrentUser=false, isAd
         )
     }
 
+    const renderEditButton = () => {
+        function onClick() {
+            populateForm(item);
+            setFormType('update');
+        }
+
+        return <button className='btn btn-small' onClick={onClick}>Edit</button>
+    }
+
+    const renderBuyButton = () => {
+        function onClick() {
+            populateForm(item);
+            setFormType('buy');
+        }
+
+        return <button className='btn btn-small' onClick={onClick}>Buy</button>
+    }
+
     const renderButtonDiv = () => {
         if(isCurrentUser) {
             return (
                 <div className='flex flex-col justify-center'>
-                    <button className='btn btn-small'>Edit</button>
+                    {renderEditButton()}
                 </div>
             )
         }
         if(isAdmin) {
             return (
                 <div className='flex flex-col justify-center gap-2'>
-                    <button className='btn btn-small'>Edit</button>
-                    <button className='btn btn-small'>Buy</button>
+                    {renderEditButton()}
+                    {renderBuyButton()}
                 </div>
             )
         }
         return (
             <div className='flex flex-col justify-center'>
-                <button className='btn btn-small'>Buy</button>
+                {renderBuyButton()}
             </div>
         )
     }

@@ -1,15 +1,15 @@
 import ListItemView from './ListItemView';
 import { useContext } from 'react';
-import { FormContext } from '../../context/ItemFormContext';
+import { ListContext } from '../../context/ListContext';
 import { AuthContext } from '../../context/AuthContext';
 
 
-const ListUserView = ({user=null, membershipid=null, showPurchased=false}) => {
+const ListUserView = ({listid=null, user=null, membershipid=null, showPurchased=false}) => {
+    if(!listid) return null;
     if(!user) return null;
     if(!membershipid) return null;
     
-    // Now useContext(FormContext) will return the correct values.
-    const { formState, updateForm, clearForm, populateForm, setFormType } = useContext(FormContext);
+    const { formType, updateForm, clearForm, populateForm, setFormType } = useContext(ListContext);
     const { currentUser } = useContext(AuthContext);
 
     const showPurchasedSetting = (!currentUser || Number(currentUser.userid) !== Number(user.userid) || showPurchased);
@@ -35,7 +35,9 @@ const ListUserView = ({user=null, membershipid=null, showPurchased=false}) => {
             {user.items.map(item => {
                 return <ListItemView 
                     key={`item-view-${item.itemid}`} 
-                    item={item} 
+                    listid={Number(listid)}
+                    userid={Number(user.userid)}
+                    item={{...item, 'membershipid': Number(membershipid)}} 
                     showPurchased={showPurchasedSetting} 
                     isCurrentUser={isCurrentUserSetting} 
                     isAdmin={!!(currentUser?.admin)}
