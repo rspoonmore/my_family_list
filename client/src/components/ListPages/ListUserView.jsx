@@ -4,8 +4,7 @@ import { ListContext } from '../../context/ListContext';
 import { AuthContext } from '../../context/AuthContext';
 
 
-const ListUserView = ({listid=null, user=null, membershipid=null, showPurchased=false}) => {
-    if(!listid) return null;
+const ListUserView = ({user=null, membershipid=null, showPurchased=false}) => {
     if(!user) return null;
     if(!membershipid) return null;
     
@@ -19,7 +18,7 @@ const ListUserView = ({listid=null, user=null, membershipid=null, showPurchased=
         if(!currentUser?.admin && Number(currentUser?.userid) !== Number(user.userid)) return null;
 
         const onClick = () => {
-            updateForm('membershipid', Number(membershipid));
+            updateForm('userid', Number(user.userid));
             setFormType('new');
         };
 
@@ -35,7 +34,6 @@ const ListUserView = ({listid=null, user=null, membershipid=null, showPurchased=
             {user.items.map(item => {
                 return <ListItemView 
                     key={`item-view-${item.itemid}`} 
-                    listid={Number(listid)}
                     userid={Number(user.userid)}
                     item={{...item, 'membershipid': Number(membershipid)}} 
                     showPurchased={showPurchasedSetting} 

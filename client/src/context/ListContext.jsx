@@ -13,11 +13,51 @@ export const ListProvider = ({ children }) => {
         memberCrosswalk: {}
     });
 
-    const setListDataRaw = (data) => {
+    const loadStateData = (listRows) => {
+        const processedData = processListData(listRows || []);
+
         setState(prev => ({
             ...prev,
-            listDataRaw: data
+            listDataRaw: listRows || [],
+            listData: processedData?.data || {},
+            memberCrosswalk: processedData?.memberCrosswalk || {}
         }))
+    }
+
+    const addItem = ({item=null}) => {
+        if(!item || !item?.userid || !item?.itemid) {return null}
+        const supplementedItem = {
+            ...item,
+            listname: state.listData?.listName || '',
+            listid: state.listData?.listid || '',
+            eventdata: state.listData?.eventDate || ''
+        }
+        const updatedListDataRaw = [...state.listDataRaw, supplementedItem]
+        loadStateData(updatedListDataRaw)
+    }
+
+    const updateItem = ({item=null}) => {
+        if(!item || !item?.userid || !item?.itemid) {return null}
+        const editedListRows = [...state.listDataRaw].map(listRow => {
+            if (Number(listRow.itemid) === Number(item.itemid)) {
+                const editedRow = {...listRow};
+                editedRow['itemname'] = item.itemName || item.itemname || listRow['itemname'];
+                editedRow['itemlink'] = item.itemLink || item.itemlink || listRow['itemlink'];
+                editedRow['itemcomments'] = item.itemComments || item.itemcomments || listRow['itemcomments'];
+                editedRow['itemqtyreq'] = Number(item.itemqtyreq || item.itemQtyReq || listRow['itemqtyreq']);
+                editedRow['itemqtypurch'] = Number(item.itemqtypurch || item.itemQtyPurch || listRow['itemqtypurch']);
+                return editedRow;
+            }
+            return listRow;
+        })
+
+        loadStateData(editedListRows)
+
+    }
+
+    const deleteItem = ({itemid=null}) => {
+        if(!itemid) {return null}
+        loadStateData([...state.listDataRaw].filter(row => Number(row.itemid) !== Number(itemid)))
     }
 
     const processListData = (listRows) => {
@@ -52,11 +92,7 @@ export const ListProvider = ({ children }) => {
                 }
             }
         })
-        setState(prev => ({
-            ...prev,
-            listData: data,
-            memberCrosswalk: newMemberCrosswalk
-        }))
+        return { 'data': data, 'memberCrosswalk': newMemberCrosswalk };
     }
 
     const updateForm = (key, value) => {
@@ -96,8 +132,10 @@ export const ListProvider = ({ children }) => {
 
     const value = {
         ...state,
-        setListDataRaw,
-        processListData,
+        loadStateData,
+        addItem,
+        updateItem,
+        deleteItem,
         updateForm,
         clearForm,
         populateForm,

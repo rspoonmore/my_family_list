@@ -7,7 +7,7 @@ import ListUserView from './ListUserView';
 import ItemForm from '../Forms/ItemForm';
 
 const ListContent = () => {
-    const { listData, listDataRaw, setListDataRaw, memberCrosswalk, processListData } = useContext(ListContext);
+    const { listData, loadStateData, memberCrosswalk } = useContext(ListContext);
     const { listid } = useParams();
     const { currentUser } = useContext(AuthContext);
     const [outcome, setOutcome] = useState(null);
@@ -31,8 +31,7 @@ const ListContent = () => {
             });
             const res = await response.json();
             if(res?.success) {
-                setListDataRaw(res?.list || []);
-                processListData(res?.list || []);
+                loadStateData(res?.list || []);
                 return
             }
             return setOutcome(res);
@@ -62,7 +61,6 @@ const ListContent = () => {
                 {listData?.users.map(user => (
                     <ListUserView
                         key={`user-${user.userid}`} 
-                        listid={Number(listid)}
                         user={user}
                         membershipid={memberCrosswalk[Number(user.userid)]}
                         showPurchased={showPurchased}

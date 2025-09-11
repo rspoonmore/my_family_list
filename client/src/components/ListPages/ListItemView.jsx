@@ -1,9 +1,8 @@
 import { useContext } from 'react';
 import { ListContext } from '../../context/ListContext';
 
-const ListItemView = ({listid=null, userid=null, item=null, showPurchased=false, isCurrentUser=false, isAdmin=false}) => {
+const ListItemView = ({userid=null, item=null, showPurchased=false, isCurrentUser=false, isAdmin=false}) => {
     if(!item) {return null}
-    if(!listid) {return null}
     if(!userid) {return null}
     const { formType, updateForm, clearForm, populateForm, setFormType } = useContext(ListContext);
 
@@ -23,6 +22,8 @@ const ListItemView = ({listid=null, userid=null, item=null, showPurchased=false,
     const renderEditButton = () => {
         function onClick() {
             populateForm(item);
+            updateForm('itemid', Number(item.itemid));
+            updateForm('userid', Number(userid));
             setFormType('update');
         }
 
@@ -32,6 +33,8 @@ const ListItemView = ({listid=null, userid=null, item=null, showPurchased=false,
     const renderBuyButton = () => {
         function onClick() {
             populateForm(item);
+            updateForm('itemid', Number(item.itemid));
+            updateForm('userid', Number(userid));
             setFormType('buy');
         }
 
