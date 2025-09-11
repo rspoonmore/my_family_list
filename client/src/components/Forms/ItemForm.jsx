@@ -45,7 +45,7 @@ const ItemForm = () => {
 
         }
 
-        return <button className='btn btn-small' type='button' onClick={onClick}>Delete</button>
+        return <button className='btn' type='button' onClick={onClick}>Delete</button>
     }
 
     const detailedForm = () => {
@@ -89,10 +89,10 @@ const ItemForm = () => {
                         onChange={(e) => {updateForm('itemQtyReq', e.target.value)}}
                     required/>
                     <div className='flex w-full my-5 justify-between'>
-                        <button className='btn btn-small' type='button' onClick={clearForm}>Cancel</button>
+                        <button className='btn' type='button' onClick={clearForm}>Cancel</button>
                         <div className='flex justify-end gap-2'>
                             {deleteButton()}
-                            <button className='btn btn-small' type='submit'>Submit</button>
+                            <button className='btn' type='submit'>Submit</button>
                         </div>
                         
                     </div>
@@ -117,9 +117,9 @@ const ItemForm = () => {
                         className='w-full'
                         onChange={(e) => {updateForm('itemQtyPurch', e.target.value)}}
                     required/>
-                    <div className='standard-form-btns'>
-                        <button className='btn btn-small' type='button' onClick={clearForm}>Cancel</button>
-                        <button className='btn btn-small' type='submit'>Submit</button>
+                    <div className='flex w-full my-5 justify-between'>
+                        <button className='btn' type='button' onClick={clearForm}>Cancel</button>
+                        <button className='btn' type='submit'>Submit</button>
                     </div>
                 </form>
             </div>
