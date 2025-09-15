@@ -12,10 +12,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 // Setup API permissions 
-const allowedOrigins = ['http://localhost:3000', 'http://localhost:5173']
+const allowedOrigins = process.env.STATIC_SITE_URL
 app.use((req, res, next) => {
     const origin = req.headers.origin;
-    if(allowedOrigins.includes(origin)) {
+    if(allowedOrigins.toLowerCase() === origin.toLowerCase()) {
         res.header('Access-Control-Allow-Origin', origin);
         res.header('Access-Control-Allow-Credentials', 'true');
     }
