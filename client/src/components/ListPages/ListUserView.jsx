@@ -19,6 +19,7 @@ const ListUserView = ({user=null, membershipid=null, showPurchased=false}) => {
 
         const onClick = () => {
             updateForm('userid', Number(user.userid));
+            updateForm('membershipid', Number(membershipid));
             setFormType('new');
         };
 
@@ -35,6 +36,7 @@ const ListUserView = ({user=null, membershipid=null, showPurchased=false}) => {
                 return <ListItemView 
                     key={`item-view-${item.itemid}`} 
                     userid={Number(user.userid)}
+                    membershipid={Number(membershipid)}
                     item={{...item, 'membershipid': Number(membershipid)}} 
                     showPurchased={showPurchasedSetting} 
                     isCurrentUser={isCurrentUserSetting} 

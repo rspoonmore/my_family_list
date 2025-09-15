@@ -3,6 +3,7 @@ import { ListContext } from '../../context/ListContext';
 
 const ItemForm = () => {
     const { formType, formData, updateForm, clearForm, addItem, updateItem, deleteItem } = useContext(ListContext);
+    const apiUrl = import.meta.env.VITE_API_URL;
     if(!formType) {return null}
     if(!formData) {return null}
 
@@ -11,36 +12,73 @@ const ItemForm = () => {
         console.log('formType: ', formType, '\nformData: ', formData);
         let method = '';
         let reactCleanerFunction = null;
+        let fetchUrl = `${apiUrl}/items`;
         if(formType === 'new') {
             method = 'POST';
             reactCleanerFunction = addItem;
         } else if(formType === 'update' || formType === 'buy') {
             method = 'PUT';
+            fetchUrl = fetchUrl + `/${String(formData?.itemid)}`
             reactCleanerFunction = updateItem;
         } else {
             return window.alert('There was an issue with the form submission. The formType was not valid.')
         }
 
         // API Request
-        
-        // API returns item
-        const returnedItem = formType === 'new' ? {'itemid': 200, 'itemname': formData.itemName, 'itemlink': formData.itemLink, 'itemcomments': formData.itemComments, 'itemqtyreq': formData.itemQtyReq} : formData;
-        const updatedItem = {item: {...returnedItem, 'userid': Number(formData.userid)}}
-        reactCleanerFunction(updatedItem)
-        clearForm();
+        try {
+            const response = await fetch(fetchUrl, {
+                method,
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify(formData)
+            });
+            const res = await response.json();
+            if(!res?.success){
+                console.log(JSON.stringify(res))
+                return window.alert('API res not successful')
+            }
+            if(formType === 'new') {
+                if(!res?.item) {
+                    return window.alert('API res does not contain new item')
+                }
+                const newItem = {item: {...res.item, 'userid': Number(formData.userid)}};
+                reactCleanerFunction(newItem);
+            } else {
+                reactCleanerFunction({item: formData})
+            }
+            clearForm();
+            return
+        } catch (error) {
+            console.log(error)
+            window.alert('Error with api request');
+        }
     }
 
     const deleteButton = () => {
         if(formType !== 'update') {return null}
-        const onClick = () => {
+        if(!formData?.itemid) {return null}
+        const onClick = async () => {
             const conf = window.confirm('Are you sure you want to delete this item?')
             if(conf) {
                 // API call
-                // Handle React data
-                deleteItem({'itemid': Number(formData.itemid)})
-
-                clearForm();
-                console.log('Item Deleted')
+                try {
+                    const response = await fetch(`${apiUrl}/items/${formData.itemid}`, {
+                        method: 'DELETE',
+                        headers: { 'Content-Type': 'application/json' },
+                        credentials: 'include'
+                    });
+                    const res = await response.json();
+                    if(!res?.success){
+                        console.log(JSON.stringify(res))
+                        return window.alert('API res not successful')
+                    }
+                    // Handle React data
+                    deleteItem({'itemid': Number(formData.itemid)});
+                    clearForm();
+                } catch (error) {
+                    console.log(error)
+                    window.alert('Error with api request');
+                }
             }
 
         }
