@@ -206,7 +206,7 @@ const AdminPage = () => {
     }
 
     // useEffect to load all data 
-    useEffect(loadPage, [currentUser])
+    useEffect(() => {loadPage()}, [currentUser])
 
     return <PageShell mainView={generateView} />;
 };

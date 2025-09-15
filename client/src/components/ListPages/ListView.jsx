@@ -21,8 +21,6 @@ const ListContent = () => {
     };
 
     const loadList = async () => {
-        if (!currentUser?.admin) return null;
-        console.log('Loading list');
         try {
             const response = await fetch(`${apiUrl}/lists/${listid}?detailed=y`, {
                 method: 'GET',
