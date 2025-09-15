@@ -64,13 +64,14 @@ module.exports.listCreate = async(req, res) => {
 }
 
 module.exports.listGetAll = async (req, res) => {
-    // Run admin check
-    const adminCheck = isUserAdmin(req);
-    if(!adminCheck) {return res.json(adminCheck)}
-
     try {
+        // set parameters
+        let params = {'detailed': req.query?.detailed?.toLowerCase() === 'y'};
+        if(!!req.query?.userid) {
+            params['userid'] = Number(req.query.userid);
+        }
         // Get lists
-        const queryResults = await db.listGetAll({detailed: req.query?.detailed === 'y'});
+        const queryResults = await db.listGetAll(params);
         if(!queryResults) { return res.json(generateErrorJsonResponse('Failure in listGetAll query to return anyting.')) }
         if(!queryResults.success) {
             return res.json(generateErrorJsonResponse(queryResults.message))

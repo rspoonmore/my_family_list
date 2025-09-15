@@ -93,7 +93,30 @@ module.exports.listGetByName = async({listName=null}) => {
     };
 }
 
-module.exports.listGetAll = async ({detailed=false}) => {
+module.exports.listGetAll = async ({detailed=false, userid=null}) => {
+    if(userid) {
+        const { rows } = await pool.query(`
+        SELECT distinct l.listid
+            , l.listname
+            , TO_CHAR(l.eventdate, 'YYYY-MM-DD') as eventDate
+            , m.membershipid
+        FROM lists as l
+        JOIN memberships as m
+            ON l.listid = m.listid
+        JOIN users as u
+            on m.userid = u.userid
+        WHERE u.userid = $1
+        ORDER BY l.listid
+            , m.membershipid
+        ;`, [Number(userid)]);
+
+        if(!rows) {return null}
+        return {
+            'success': true,
+            'lists': rows
+        };
+    }
+
     let listQuery = '';
     if(detailed) {
         listQuery = `
