@@ -12,19 +12,32 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 // Setup API permissions 
-const allowedOrigins = process.env.STATIC_SITE_URL
-app.use((req, res, next) => {
-    const origin = req.headers.origin;
-    if(allowedOrigins.toLowerCase() === origin.toLowerCase()) {
-        res.header('Access-Control-Allow-Origin', origin);
-        res.header('Access-Control-Allow-Credentials', 'true');
-    }
-    
+const allowedOrigins = [
+  process.env.STATIC_SITE_URL,
+  'http://localhost:3000',
+  'http://localhost:5173'
+];
+
+const checkOrigin = (req, res, next) => {
+  const origin = req.headers.origin;
+
+  if (allowedOrigins.includes(origin)) {
+    // If the origin is in our allowed list, let the request proceed.
+    res.header('Access-Control-Allow-Origin', origin);
+    res.header('Access-Control-Allow-Credentials', 'true');
     res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
     res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
     next();
-})
+  } else {
+    // If the origin is not allowed, send a 403 Forbidden error.
+    res.status(403).json({
+      success: false,
+      message: 'Permission Denied: Invalid Origin'
+    });
+  }
+};
+app.use(checkOrigin)
 
 // Setup fall through API response
 app.get('/', (req, res) => {
