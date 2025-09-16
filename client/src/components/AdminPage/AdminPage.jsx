@@ -143,6 +143,7 @@ const AdminPage = () => {
                         </div>
                         <div className='card-button-div'>
                             <Link className='btn btn-small' to={`/users/${user.userid}/update`} state={{user}}>Edit</Link>
+                            <Link className='btn btn-small' to={`/users/${user.userid}/password`}>Password</Link>
                             <button className='btn btn-small' onClick={deletePressed('user', user.userid)}>Delete</button>
                         </div>
                     </div>

@@ -9,6 +9,53 @@ const {generateErrorJsonResponse} = require('../errorJsonResGenerator');
 
 passport.use('jwt', strategy);
 
+async function isUserAdmin(req) {
+    try {
+        // Load admin status from cookie
+        const cookieSearchJson = authenticator.getUserIDFromCookie(req);
+        // Check that cookie was loaded successfully
+        if(!cookieSearchJson.success) {
+            return generateErrorJsonResponse(cookieSearchJson.message)
+        };
+        if(!cookieSearchJson.userid) {return generateErrorJsonResponse(`User was not found from cookie`)};
+        // Load user
+        reqUser = await db.userGetByID({userid: Number(cookieSearchJson.userid)});
+        if(!reqUser) {return generateErrorJsonResponse(`User was not found.`)};
+        // Check that user is admin
+        if(!reqUser.admin) {return generateErrorJsonResponse('User is not an admin and does not have permissions')}
+
+        return true;
+    } catch(error) {
+        console.log(error)
+        return generateErrorJsonResponse('Admin Check hit error');
+    }
+}
+
+async function isAdminOrRequesting(req, targetUserID) {
+    // Load admin status from cookie
+    const cookieSearchJson = authenticator.getUserIDFromCookie(req);
+    // Check that cookie was loaded successfully
+    if(!cookieSearchJson.success) {
+        return generateErrorJsonResponse(cookieSearchJson.message)
+    };
+    if(!cookieSearchJson.userid) {return generateErrorJsonResponse(`User was not found from cookie`)};
+    // Load user
+    reqUser = await db.userGetByID({userid: Number(cookieSearchJson.userid)});
+    if(!reqUser) {return generateErrorJsonResponse(`User was not found.`)};
+
+    // If admin return True
+    if(reqUser?.admin) {
+        return {'reqAllowed': true, 'requestType': 'admin'};
+    }
+
+    // If requesting user matches target user return True
+    if(Number(reqUser?.userid) === Number(targetUserID)) {
+        return {'reqAllowed': true, 'requestType': 'target'};
+    }
+
+    return {'reqAllowed': false, 'requestType': 'other'};
+}
+
 async function userLogin(req, res) {
     const { email, password } = req.body;
     let user = null;
@@ -77,18 +124,9 @@ async function userCreate(req, res) {
 
 async function usersGetAll(req, res) {
     try {
-        // Load admin status from cookie
-        const cookieSearchJson = authenticator.getUserIDFromCookie(req);
-        // Check that cookie was loaded successfully
-        if(!cookieSearchJson.success) {
-            return res.json(generateErrorJsonResponse(cookieSearchJson.message))
-        };
-        if(!cookieSearchJson.userid) {return res.json(generateErrorJsonResponse(`User was not found from cookie`))};
-        // Load user
-        reqUser = await db.userGetByID({userid: cookieSearchJson.userid});
-        if(!reqUser) {return res.json(generateErrorJsonResponse(`User was not found.`))};
-        // Check that user is admin
-        if(!reqUser.admin) {return res.json(generateErrorJsonResponse('User is not an admin and does not have permissions'))}
+        // Run admin check
+        const adminCheck = isUserAdmin(req);
+        if(!adminCheck) {return res.json(adminCheck)}
 
         // Load users
         const users = await db.userGetAll();
@@ -125,18 +163,7 @@ async function userUpdate(req, res) {
         if(!existingUser) {return res.json(generateErrorJsonResponse(`User with userid ${userid} does not exist.`))}
 
         // Confirm that requesting user is the same or an admin
-        let reqAllowed = false;
-        const cookieSearchJson = authenticator.getUserIDFromCookie(req);
-        if (cookieSearchJson.success && cookieSearchJson.userid) {
-            const requestingUser = await db.userGetByID({userid: Number(cookieSearchJson.userid)});
-            if(requestingUser && requestingUser.userid === existingUser.userid) {
-                reqAllowed = true;
-            }
-            else if(requestingUser && requestingUser.admin) {
-                reqAllowed = true;
-            }
-        } 
-        
+        const {reqAllowed} = await isAdminOrRequesting(req, existingUser?.userid);
         if(!reqAllowed) {return res.json(generateErrorJsonResponse("The user requesting the update is not an admin and does not match the user being updated"))}
 
         // Update the user
@@ -169,20 +196,6 @@ async function userGetByID(req, res) {
         // Check for required fields
         if(!userid) {return res.json(generateErrorJsonResponse('No userid was found in the request parameters'))}
 
-        // // Confirm that requesting user is the same or an admin
-        // let reqAllowed = false;
-        // const cookieSearchJson = authenticator.getUserIDFromCookie(req);
-        // if (cookieSearchJson.success && cookieSearchJson.userid) {
-        //     const requestingUser = await db.userGetByID({userid: cookieSearchJson.userid});
-        //     if(requestingUser && requestingUser.userid === existingUser.userid) {
-        //         reqAllowed = true;
-        //     }
-        //     else if(requestingUser && requestingUser.admin) {
-        //         reqAllowed = true;
-        //     }
-        // } 
-        // if(!reqAllowed) {return res.json(generateErrorJsonResponse("The user requesting the information is not an admin and does not match the user being requested"))}
-
         // Load users
         const user = await db.userGetByID({userid});
         if(!user) {return res.json(generateErrorJsonResponse(`No user with userid ${userid} was found`))}
@@ -200,40 +213,31 @@ async function userUpdatePassword(req, res) {
     try {
         const params = req.params;
         const userid = Number(params.userid);
-        const { oldPassword, newPassword, confirmPassword } = req.body;
+        
 
         // Check for required fields
         if(!userid) {return res.json(generateErrorJsonResponse('No userid was found in the request parameters'))}
-        if(!oldPassword) {return res.json(generateErrorJsonResponse('No Old Password Entered'))}
-        if(!newPassword) {return res.json(generateErrorJsonResponse('No New Password Entered'))}
-        if(!confirmPassword) {return res.json(generateErrorJsonResponse('No Confirmed Password Entered'))}
-        if(newPassword !== confirmPassword) {return res.json(generateErrorJsonResponse('New Passwords Do Not Match'))}
+        if(!req.body?.newPassword) {return res.json(generateErrorJsonResponse('No New Password Entered'))}
+        if(!req.body?.confirmPassword) {return res.json(generateErrorJsonResponse('No Confirmed Password Entered'))}
+        if(req.body?.newPassword !== req.body?.confirmPassword) {return res.json(generateErrorJsonResponse('New Passwords Do Not Match'))}
 
         // Check if user exists
         const existingUser = await db.userGetByID({userid});
         if(!existingUser) {return res.json(generateErrorJsonResponse(`User with userid ${userid} does not exist.`))}
 
         // Confirm that requesting user is the same or an admin
-        let reqAllowed = false;
-        const cookieSearchJson = authenticator.getUserIDFromCookie(req);
-        if (cookieSearchJson.success && cookieSearchJson.userid) {
-            const requestingUser = await db.userGetByID({userid: Number(cookieSearchJson.userid)});
-            if(requestingUser && requestingUser.userid === existingUser.userid) {
-                reqAllowed = true;
-            }
-            else if(requestingUser && requestingUser.admin) {
-                reqAllowed = true;
-            }
-        } 
-        
+        const {reqAllowed, requestType} = await isAdminOrRequesting(req, existingUser?.userid);
         if(!reqAllowed) {return res.json(generateErrorJsonResponse("The user requesting the update is not an admin and does not match the user being updated"))}
 
-        // Check that passwords match
-        const match = await bcrypt.compare(oldPassword, existingUser.password);
-        if(!match) {return res.json(generateErrorJsonResponse(`The password entered was incorrect.`))};
+        // Check that passwords match if not an Admin
+        if(requestType !== 'admin') {
+            if(!req.body?.oldPassword) {return res.json(generateErrorJsonResponse('No Old Password Entered'))}
+            const match = await bcrypt.compare(req.body?.oldPassword, existingUser.password);
+            if(!match) {return res.json(generateErrorJsonResponse(`The password entered was incorrect.`))};
+        }
 
         // Hash password for storage
-        const hashedPassword = await bcrypt.hash(newPassword, Number(process.env.BCRYPT_SALT));
+        const hashedPassword = await bcrypt.hash(req.body?.newPassword, Number(process.env.BCRYPT_SALT));
 
         // Update the user
         const updateResponse = await db.userUpdatePassword({userid, password: hashedPassword});
@@ -260,17 +264,7 @@ async function userDelete(req, res) {
         if(!userid) {return res.json(generateErrorJsonResponse('No userid was found in the request parameters'))}
 
         // Confirm that requesting user is the same or an admin
-        let reqAllowed = false;
-        const cookieSearchJson = authenticator.getUserIDFromCookie(req);
-        if (cookieSearchJson.success && cookieSearchJson.userid) {
-            const requestingUser = await db.userGetByID({userid: Number(cookieSearchJson.userid)});
-            if(requestingUser && requestingUser.userid === userid) {
-                reqAllowed = true;
-            }
-            else if(requestingUser && requestingUser.admin) {
-                reqAllowed = true;
-            }
-        } 
+        const {reqAllowed} = await isAdminOrRequesting(req, existingUser?.userid);
         if(!reqAllowed) {return res.json(generateErrorJsonResponse("The user requesting the update is not an admin and does not match the user being updated"))}
 
         // Delete the user
