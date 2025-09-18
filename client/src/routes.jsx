@@ -6,11 +6,13 @@ import AdminPage from "./components/AdminPage/AdminPage.jsx";
 import ListNewPage from "./components/ListPages/ListNewPage.jsx";
 import ListUpdatePage from "./components/ListPages/ListUpdatePage.jsx";
 import ListView from "./components/ListPages/ListView.jsx";
+import ErrorPage from "./components/ErrorPage/ErrorPage.jsx";
 
 const routes = [
     {
         path: '/',
-        element: <StartPage />
+        element: <StartPage />,
+        errorElement: <ErrorPage />
     },
     {
         path: '/register',

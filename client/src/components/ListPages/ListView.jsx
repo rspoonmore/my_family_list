@@ -12,6 +12,7 @@ const ListContent = () => {
     const { currentUser } = useContext(AuthContext);
     const [outcome, setOutcome] = useState(null);
     const [showPurchased, setShowPurchased] = useState(false);
+    const [pageLoaded, setPageLoaded] = useState(false);
     const apiUrl = import.meta.env.VITE_API_URL;
 
     const renderOutcome = () => {
@@ -41,6 +42,7 @@ const ListContent = () => {
 
     const loadPage = () => {
         loadList();
+        setPageLoaded(true);
     };
 
     useEffect(loadPage, [currentUser, listid]);
@@ -69,6 +71,20 @@ const ListContent = () => {
     };
 
     const renderPage = () => {
+        if(!pageLoaded) {
+            return (
+                <div className='p-5 m-5'>
+                    Loading listid: {listid || 'null'}
+                </div>
+            )
+        }
+        if(!listData?.listName) {
+            return (
+                <div className='p-5 m-5'>
+                    The list for this page (listid: {listid || 'null'}) does not exist. Please double check that you are accessing the correct link to view your list.
+                </div>
+            )
+        }
         return (
             <div className='flex flex-col p-5 m-5'>
                 <ItemForm />
@@ -84,7 +100,6 @@ const ListContent = () => {
     return <PageShell mainView={renderPage} />
 };
 
-// This is the main exported component
 const ListView = () => {
     return (
         <ListProvider>
