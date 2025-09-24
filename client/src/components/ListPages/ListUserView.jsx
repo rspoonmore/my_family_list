@@ -2,13 +2,15 @@ import ListItemView from './ListItemView';
 import { useContext } from 'react';
 import { ListContext } from '../../context/ListContext';
 import { AuthContext } from '../../context/AuthContext';
+import Icon from '@mdi/react'
+import { mdiPlus } from '@mdi/js'
 
 
 const ListUserView = ({user=null, membershipid=null, showPurchased=false}) => {
     if(!user) return null;
     if(!membershipid) return null;
     
-    const { formType, updateForm, clearForm, populateForm, setFormType } = useContext(ListContext);
+    const { updateForm, setFormType } = useContext(ListContext);
     const { currentUser } = useContext(AuthContext);
 
     const showPurchasedSetting = (!currentUser || Number(currentUser.userid) !== Number(user.userid) || showPurchased);
@@ -22,8 +24,8 @@ const ListUserView = ({user=null, membershipid=null, showPurchased=false}) => {
             updateForm('membershipid', Number(membershipid));
             setFormType('new');
         };
-
-        return <button className='btn' onClick={onClick}>Add Item</button>;
+        
+        return <Icon path={mdiPlus} size={1.125} color={"green"} className='btn' onClick={onClick}/>
     };
 
     return (
