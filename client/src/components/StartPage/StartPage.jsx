@@ -67,7 +67,6 @@ const StartPageView = () => {
             return (
                 <div className='space-y-3'>
                     {listArray.map(list => {
-                        const dateString = new Date(list.eventdate).toLocaleDateString();
                         return (
                             <div 
                                 key={`list-link-${list?.listid}`} 
@@ -78,7 +77,7 @@ const StartPageView = () => {
                                         {list?.listName || list?.listname}
                                     </span>
                                     <span className='text-sm text-gray-600 font-medium'>
-                                        {dateString}
+                                        {list?.eventdate || list?.eventDate || ""}
                                     </span>
                                 </Link>
                             </div>

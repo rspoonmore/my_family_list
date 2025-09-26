@@ -27,7 +27,11 @@ const useListPage = () => {
 
     const renderOutcome = () => {
         if(!outcome?.message) {return <></>}
-        const className = outcome.success ? 'success-large' : 'error-large';
+        const baseClass = 'p-3 mb-4 rounded-md font-medium text-sm border';
+        const successClass = 'bg-green-100 text-green-700 border-green-200';
+        const errorClass = 'bg-red-100 text-red-700 border-red-200';
+        
+        const className = outcome.success ? `${baseClass} ${successClass}` : `${baseClass} ${errorClass}`;
         return <div className={className}>{outcome.message}</div>
     }
 
@@ -54,6 +58,11 @@ const ListNewPage = () => {
         'isAllowed': false,
         'potentialUsers': []
     })
+
+    const inputClass = 'mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm';
+    const primaryButtonClass = 'px-4 py-2 text-sm font-medium rounded-lg text-white bg-green-700 hover:bg-green-900 transition-colors shadow-md';
+    const secondaryButtonClass = 'px-4 py-2 text-sm font-medium rounded-lg text-gray-700 bg-gray-200 hover:bg-gray-300 transition-colors';
+
 
     const getPotentialUsers = () => {
         if (!currentUser?.admin) {return []}
@@ -156,7 +165,7 @@ const ListNewPage = () => {
     }
 
     // Submit both API calls from form data
-    const submitForm = async (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         console.log('Submitting Form');
 
@@ -177,31 +186,42 @@ const ListNewPage = () => {
     // New List Form
     const renderForm = () => {
         return (
-            <div className='standard-form-container border-2 m-5'>
-                <h1>Register a New List</h1>
+            // Main card container
+            <div className='max-w-3xl mx-auto p-8 bg-white shadow-xl rounded-lg mt-10'>
+                <h1 className='text-3xl font-extrabold text-gray-900 mb-6'>Create New List</h1>
                 {renderOutcome()}
-                <form className='standard-form' onSubmit={submitForm}>
-                    <fieldset className='standard-form-container'>
-                        <label htmlFor='listName'>List Name</label>
-                        <input
+                
+                <form className='flex flex-col space-y-6' onSubmit={handleSubmit}>
+                    
+                    {/* List Details Fieldset */}
+                    <fieldset className='flex flex-col space-y-4 p-4 border border-gray-200 rounded-lg'>
+                        <legend className='px-2 text-lg font-semibold text-gray-700'>List Details</legend>
+                        
+                        <label htmlFor='listName' className='block text-sm font-medium text-gray-700'>List Name</label>
+                        <input 
                             id='listName'
                             name='listName'
                             type='text'
                             value={formData.listName}
                             onChange={(e) => {updateFormData('listName', e)}}
+                            className={inputClass}
                             required 
                         />
-                        <label htmlFor='eventDate'>Event Date</label>
-                        <input
+                        
+                        <label htmlFor='eventDate' className='block text-sm font-medium text-gray-700'>Event Date</label>
+                        <input 
                             id='eventDate'
                             name='eventDate'
                             type='date'
                             value={formData.eventDate}
                             onChange={(e) => {updateFormData('eventDate', e)}}
+                            className={inputClass}
                             required 
                         />
                     </fieldset>
-                    <fieldset className='standard-form-container'>
+                    
+                    {/* Membership Management Fieldset */}
+                    <fieldset className='p-4 border border-gray-200 rounded-lg'>
                         <MembershipAddForm
                             potentialUsers={pageState.potentialUsers}
                             members={members}
@@ -211,9 +231,11 @@ const ListNewPage = () => {
                             setNewUserChoice={setNewUserChoice}
                         />
                     </fieldset>
-                    <div className='standard-form-btns'>
-                        <button className='btn' type='button' onClick={clearForm}>Clear</button>
-                        <button className='btn' type='submit'>Register</button>
+                    
+                    {/* Buttons */}
+                    <div className='flex justify-end space-x-3 pt-4 border-t'>
+                        <button className={secondaryButtonClass} type='button' onClick={clearForm}>Clear</button>
+                        <button className={primaryButtonClass} type='submit'>Register List</button>
                     </div>
                 </form>
             </div>
@@ -221,10 +243,10 @@ const ListNewPage = () => {
     }
 
     const renderPage = () => {
-        if(!pageState.isAllowed) {return <div>The Current User is not allowed to create a new list.</div>}
+        if(!pageState.isAllowed) {return <div className='p-8 text-center text-red-600'>The Current User is not allowed to create a new list.</div>}
 
         return (
-            <div>
+            <div className='max-w-3xl mx-auto p-8 bg-white shadow-xl rounded-lg mt-10 space-y-6'>
                 {renderForm()}
             </div>
         )
