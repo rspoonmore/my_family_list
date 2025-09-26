@@ -5,7 +5,7 @@ const ListItemView = ({userid=null, membershipid=null, item=null, showPurchased=
     if(!item) {return null}
     if(!userid) {return null}
     if(!membershipid) {return null}
-    const { formType, updateForm, clearForm, populateForm, setFormType } = useContext(ListContext);
+    const { updateForm, populateForm, setFormType } = useContext(ListContext);
 
     const renderLink = () => {
         if((item?.itemLink || item?.itemlink || "") === "") {return null}
@@ -29,7 +29,8 @@ const ListItemView = ({userid=null, membershipid=null, item=null, showPurchased=
             setFormType('update');
         }
 
-        return <button className='btn btn-small' onClick={onClick}>Edit</button>
+        const className = 'bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-1 px-3 rounded border border-gray-300';
+        return <button className={className} onClick={onClick}>Edit</button>
     }
 
     const renderBuyButton = () => {
@@ -41,7 +42,8 @@ const ListItemView = ({userid=null, membershipid=null, item=null, showPurchased=
             setFormType('buy');
         }
 
-        return <button className='btn btn-small' onClick={onClick}>Buy</button>
+        const className = 'bg-green-600 hover:bg-green-700 text-white font-bold py-1 px-3 rounded';
+        return <button className={className} onClick={onClick}>Buy</button>
     }
 
     const renderButtonDiv = () => {
@@ -54,7 +56,7 @@ const ListItemView = ({userid=null, membershipid=null, item=null, showPurchased=
         }
         if(isAdmin) {
             return (
-                <div className='flex flex-col justify-center gap-2'>
+                <div className='flex flex-col justify-center gap-2 flex-wrap'>
                     {renderEditButton()}
                     {renderBuyButton()}
                 </div>
@@ -68,22 +70,23 @@ const ListItemView = ({userid=null, membershipid=null, item=null, showPurchased=
     }
 
     const renderPurchasedDiv = () => {
+        const className = 'bg-gray-300 text-green-700 px-3 py-1 rounded-full text-sm font-semibold whitespace-nowrap'
         if(!showPurchased) { 
             return (
-                <div className='text-xs font-light bg-gray-300 px-2 py-3 rounded-sm'>Requested: {item.itemQtyReq}</div>
+                <div className={className}>Requested: {item.itemQtyReq}</div>
             )
         }
         return (
-            <div className='text-xs font-light bg-gray-300 px-2 py-3 rounded-sm'>Bought: {item.itemQtyPurch}/{item.itemQtyReq}</div>
+            <div className={className}>Bought: {item.itemQtyPurch}/{item.itemQtyReq}</div>
         )
     }
 
-    const className = 'grid grid-cols-[5fr_2fr_1fr] m-3 gap-5 justify-content-center items-center'
+    const className = 'grid grid-cols-[5fr_2fr_1fr] border-b border-gray-100 py-3 gap-5 justify-content-center items-center'
 
     return (
         <div className={className}>
             <div className='flex flex-col'>
-                <strong>{item.itemName || ""}</strong>
+                <strong className='text-lg font-medium text-gray-800'>{item.itemName || ""}</strong>
                 {renderLink()}
                 <div className='text-sm'>{item.itemComments || ""}</div>
             </div>

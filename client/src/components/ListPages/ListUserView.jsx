@@ -25,13 +25,13 @@ const ListUserView = ({user=null, membershipid=null, showPurchased=false}) => {
             setFormType('new');
         };
         
-        return <Icon path={mdiPlus} size={1.125} color={"green"} className='btn' onClick={onClick}/>
+        return <Icon path={mdiPlus} size={1.125} color={"green"} className='hover:bg-green-100 p-1 rounded-full cursor-pointer' onClick={onClick}/>
     };
 
     return (
-        <div className='flex flex-col m-5'>
+        <div className='flex flex-col m-5 border-2 border-gray-200 p-4 mb-6 rounded-lg shadow-md'>
             <div className='flex gap-3'>
-                <strong>{user.userName || user.email || "Unnamed User"}</strong>
+                <strong className='text-xl font-semibold text-green-700 border-b pb-2 mb-3'>{user.userName || user.email || "Unnamed User"}</strong>
                 {renderAddItemButton()}
             </div>
             {user.items.map(item => {

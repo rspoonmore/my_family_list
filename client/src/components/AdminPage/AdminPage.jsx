@@ -1,4 +1,3 @@
-import './AdminPage.css'
 import { useContext, useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { AuthContext } from '../../context/AuthContext'
@@ -126,32 +125,39 @@ const AdminPage = () => {
 
     // Generate View
     const generateView = () => {
-        if(!updateAllowed) {return <div>You are not an admin, and therefore cannot access this page.</div>}
+        if(!updateAllowed) {return <div className="p-8 text-lg text-red-600">You are not an admin, and therefore cannot access this page.</div>}
 
+        const cardContainerClassName = 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6';
+        const cardClassName = 'bg-white p-6 shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-lg border border-gray-100';
+        const titleClassName = 'text-xl font-semibold text-green-700 truncate block mb-3';
+        const detailSectionClassName = 'space-y-1 text-sm text-gray-600 mb-4';
+        const buttonSectionClassName = 'flex flex-wrap gap-2 pt-4 border-t border-gray-100';
+        const buttonClassName = 'px-3 py-1 text-xs font-medium rounded-full bg-green-700 text-white hover:bg-indigo-600';
+        
         // Show user data
         const userCardView = () => {
             if(!userData) {return <></>}
 
             function userCard(user) {
                 return (
-                    <div key={`user-card-${user.userid}`} className='section-card'>
-                        <span className='card-title'>{user.email}</span>
-                        <div className='card-detail-div'>
-                            <span className='card-details'>ID: {user.userid}</span>
-                            <span className='card-details'>Name: {user.firstname} {user.lastname}</span>
-                            <span className='card-details'>Admin: {user.admin ? 'Yes' : 'No'}</span>
+                    <div key={`user-card-${user.userid}`} className={cardClassName}>
+                        <span className={titleClassName}>{user.email}</span>
+                        <div className={detailSectionClassName}>
+                            <span className='block'>ID: {user.userid}</span>
+                            <span className='block'>Name: {user.firstname} {user.lastname}</span>
+                            <span className='block'>Admin: {user.admin ? 'Yes' : 'No'}</span>
                         </div>
-                        <div className='card-button-div'>
-                            <Link className='btn btn-small' to={`/users/${user.userid}/update`} state={{user}}>Edit</Link>
-                            <Link className='btn btn-small' to={`/users/${user.userid}/password`}>Password</Link>
-                            <button className='btn btn-small' onClick={deletePressed('user', user.userid)}>Delete</button>
+                        <div className={buttonSectionClassName}>
+                            <Link className={buttonClassName} to={`/users/${user.userid}/update`} state={{user}}>Edit</Link>
+                            <Link className={buttonClassName} to={`/users/${user.userid}/password`}>Password</Link>
+                            <button className={buttonClassName} onClick={deletePressed('user', user.userid)}>Delete</button>
                         </div>
                     </div>
                 )
             }
 
             return (
-                <div className='section-card-container'>
+                <div className={cardContainerClassName}>
                     {userData.map(user => (userCard(user)))}
                 </div>
             )
@@ -163,40 +169,46 @@ const AdminPage = () => {
 
             function listCard(list) {
                 return (
-                    <div key={`list-card-${list.listid}`} className='section-card'>
-                        <span className='card-title'>{list.listName || list.listname}</span>
-                        <div className='card-detail-div'>
-                            <span className='card-details'>ID: {list.listid}</span>
-                            <span className='card-details'>Event Date: {list.eventDate || list.eventdate}</span>
+                    <div key={`list-card-${list.listid}`} className={cardClassName}>
+                        <span className={titleClassName}>{list.listName || list.listname}</span>
+                        <div className={detailSectionClassName}>
+                            <span className='block'>ID: {list.listid}</span>
+                            <span className='block'>Event Date: {list.eventDate || list.eventdate}</span>
                         </div>
-                        <div className='card-button-div'>
-                            <Link className='btn btn-small' to={`/lists/${list.listid}/update`}>Edit</Link>
-                            <button className='btn btn-small' onClick={deletePressed('list', list.listid)}>Delete</button>
+                        <div className={buttonSectionClassName}>
+                            <Link className={buttonClassName} to={`/lists/${list.listid}/update`}>Edit</Link>
+                            <button className={buttonClassName} onClick={deletePressed('list', list.listid)}>Delete</button>
                         </div>
                     </div>
                 )
             }
 
             return (
-                <div className='section-card-container'>
+                <div className={cardContainerClassName}>
                     {listData.map(list => (listCard(list)))}
                 </div>
             )
         }
 
 
+        const sectionClassName = 'mb-12 border-b border-gray-200 pb-6';
+        const newButtonClassName = 'px-4 py-2 text-sm font-medium rounded-lg bg-green-700 text-white hover:bg-green-900 transition-colors';
         return (
-            <div className='admin-container'> 
-                <div className='admin-section'>
-                    <div><strong>Users</strong></div>
-                    <Link to='/register' className='btn'>New User</Link>
+            <div className='max-w-6xl mx-auto px-4 py-8'> 
+                <div className={sectionClassName}>
+                    <div className='flex justify-between items-center mb-4'>
+                        <h2 className='text-2xl font-bold text-gray-800'>Users</h2>
+                        <Link to='/register' className={newButtonClassName}>New User</Link>
+                    </div>
                     {sectionOutcomes({sectionOutcome: userLoadOutcome})}
                     {userCardView()}
                 </div>
 
-                <div className='admin-section'>
-                    <div><strong>Lists</strong></div>
-                    <Link to='/lists/register' className='btn'>New List</Link>
+                <div className={sectionClassName}>
+                    <div className='flex justify-between items-center mb-4'>
+                        <h2 className='text-2xl font-bold text-gray-800'>Lists</h2>
+                        <Link to='/lists/register' className={newButtonClassName}>New List</Link>
+                    </div>
                     {sectionOutcomes({sectionOutcome: listLoadOutcome})}
                     {listCardView()}
                 </div>

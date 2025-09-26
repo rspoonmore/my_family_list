@@ -51,7 +51,8 @@ const ListContent = () => {
         if(!currentUser || !currentUser.admin) return null;
         const changeShowPurchased = () => setShowPurchased(prev => !prev);
         const buttonDisplayText = showPurchased ? 'Hide My Counts' : 'Show My Counts';
-        return <div><button className='btn' onClick={changeShowPurchased}>{buttonDisplayText}</button></div>
+        const className = 'bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-1 px-3 rounded border border-gray-300';
+        return <div><button className={className} onClick={changeShowPurchased}>{buttonDisplayText}</button></div>
     };
 
     const renderUserViews = () => {
@@ -86,7 +87,7 @@ const ListContent = () => {
             )
         }
         return (
-            <div className='flex flex-col p-5 m-5'>
+            <div className='max-w-4xl mx-auto p-4 md:p-8 bg-white shadow-xl rounded-lg'>
                 <ItemForm />
                 <h1><strong>List: </strong>{listData?.listName || ""}</h1>
                 <h2><strong>Event Date: </strong>{listData?.eventDate || ""}</h2>
