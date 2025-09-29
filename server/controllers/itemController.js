@@ -124,7 +124,6 @@ module.exports.itemUpdateQtyPurchased = async(req, res) => {
     try {
         // edit item
         const queryResults = await db.itemUpdateQtyPurchased({'itemid': Number(params.itemid), 'itemQtyPurch': Number(body.itemQtyPurch) });
-        console.log(queryResults)
         if(!queryResults) { return res.json(generateErrorJsonResponse('Failure in itemUpdateQtyPurchased query to return anyting.')) }
         if(!queryResults.success) {
             return res.json(generateErrorJsonResponse(queryResults.message))
