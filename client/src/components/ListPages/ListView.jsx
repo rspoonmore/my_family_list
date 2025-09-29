@@ -12,6 +12,7 @@ const ListContent = () => {
     const { currentUser } = useContext(AuthContext);
     const [outcome, setOutcome] = useState(null);
     const [showPurchased, setShowPurchased] = useState(false);
+    const [showMyPurchased, setShowMyPurchased] = useState(false);
     const [pageLoaded, setPageLoaded] = useState(false);
     const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -47,10 +48,17 @@ const ListContent = () => {
 
     useEffect(loadPage, [currentUser, listid]);
 
-    const renderShowCountButton = () => {
+    const renderShowMyCountButton = () => {
         if(!currentUser || !currentUser.admin) return null;
+        const changeShowMyPurchased = () => setShowMyPurchased(prev => !prev);
+        const buttonDisplayText = showMyPurchased ? 'Hide My Counts' : 'Show My Counts';
+        const className = 'bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-1 px-3 rounded border border-gray-300';
+        return <div><button className={className} onClick={changeShowMyPurchased}>{buttonDisplayText}</button></div>
+    };
+
+    const renderShowCountButton = () => {
         const changeShowPurchased = () => setShowPurchased(prev => !prev);
-        const buttonDisplayText = showPurchased ? 'Hide My Counts' : 'Show My Counts';
+        const buttonDisplayText = showPurchased ? 'Hide Purchased Counts' : 'Show Purchased Counts';
         const className = 'bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-1 px-3 rounded border border-gray-300';
         return <div><button className={className} onClick={changeShowPurchased}>{buttonDisplayText}</button></div>
     };
@@ -65,6 +73,7 @@ const ListContent = () => {
                         user={user}
                         membershipid={memberCrosswalk[Number(user.userid)]}
                         showPurchased={showPurchased}
+                        showMyPurchased={showMyPurchased}
                     />
                 ))}
             </div>
@@ -91,7 +100,10 @@ const ListContent = () => {
                 <ItemForm />
                 <h1><strong>List: </strong>{listData?.listName || ""}</h1>
                 <h2><strong>Event Date: </strong>{listData?.eventDate || ""}</h2>
-                {renderShowCountButton()}
+                <div className='flex gap-3 my-4'>
+                    {renderShowMyCountButton()}
+                    {renderShowCountButton()}
+                </div>
                 {renderOutcome()}
                 {renderUserViews()}
             </div>

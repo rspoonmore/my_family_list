@@ -3,7 +3,7 @@ import { createContext, useState } from 'react';
 export const ListContext = createContext(null);
 
 export const ListProvider = ({ children }) => {
-    const blankItemForm = {'membershipid': '', 'itemName': '', 'itemLink': '', 'itemComments': '', 'itemQtyReq': 0, 'itemQtyPuch': 0}
+    const blankItemForm = {'membershipid': '', 'itemName': '', 'itemLink': '', 'itemComments': '', 'itemQtyReq': 0, 'itemQtyPurch': 0}
     
     const [state, setState] = useState({
         formType: null,

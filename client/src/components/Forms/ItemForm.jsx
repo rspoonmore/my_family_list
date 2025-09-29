@@ -22,9 +22,13 @@ const ItemForm = () => {
         if(formType === 'new') {
             method = 'POST';
             reactCleanerFunction = addItem;
-        } else if(formType === 'update' || formType === 'buy') {
+        } else if(formType === 'update') {
             method = 'PUT';
             fetchUrl = fetchUrl + `/${String(formData?.itemid)}`
+            reactCleanerFunction = updateItem;
+        } else if (formType === 'buy') {
+            method = 'PUT';
+            fetchUrl = fetchUrl + `/${String(formData?.itemid)}/purchased`
             reactCleanerFunction = updateItem;
         } else {
             return window.alert('There was an issue with the form submission. The formType was not valid.')
@@ -43,7 +47,8 @@ const ItemForm = () => {
                 console.log(JSON.stringify(res))
                 return window.alert('API response not successful. Check console for details.')
             }
-            reactCleanerFunction(res.item);
+            
+            reactCleanerFunction({'item': formType === 'buy' ? formData : res.item});
             clearForm(); // Close the form on success
 
         } catch(error) {

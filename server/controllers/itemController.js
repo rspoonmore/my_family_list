@@ -118,12 +118,13 @@ module.exports.itemUpdateQtyPurchased = async(req, res) => {
     if(!body?.itemQtyPurch) {return generateErrorJsonResponse('itemQtyPurch was not provided')}
 
     // Run real user check
-    const userCheck = isRealUser(req);
-    if(!userCheck) {return res.json(userCheck)}
+    // const userCheck = isRealUser(req);
+    // if(!userCheck) {return res.json(userCheck)}
 
     try {
         // edit item
         const queryResults = await db.itemUpdateQtyPurchased({'itemid': Number(params.itemid), 'itemQtyPurch': Number(body.itemQtyPurch) });
+        console.log(queryResults)
         if(!queryResults) { return res.json(generateErrorJsonResponse('Failure in itemUpdateQtyPurchased query to return anyting.')) }
         if(!queryResults.success) {
             return res.json(generateErrorJsonResponse(queryResults.message))

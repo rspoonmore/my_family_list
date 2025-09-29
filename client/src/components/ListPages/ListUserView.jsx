@@ -6,15 +6,15 @@ import Icon from '@mdi/react'
 import { mdiPlus } from '@mdi/js'
 
 
-const ListUserView = ({user=null, membershipid=null, showPurchased=false}) => {
+const ListUserView = ({user=null, membershipid=null, showPurchased=false, showMyPurchased=false}) => {
     if(!user) return null;
     if(!membershipid) return null;
     
     const { updateForm, setFormType } = useContext(ListContext);
     const { currentUser } = useContext(AuthContext);
 
-    const showPurchasedSetting = (!currentUser || Number(currentUser.userid) !== Number(user.userid) || showPurchased);
     const isCurrentUserSetting = currentUser && Number(currentUser.userid) === Number(user.userid);
+    const showPurchasedSetting = ((isCurrentUserSetting & showMyPurchased) | (~isCurrentUserSetting & showPurchased));
 
     const renderAddItemButton = () => {
         if(!currentUser?.admin && Number(currentUser?.userid) !== Number(user.userid)) return null;

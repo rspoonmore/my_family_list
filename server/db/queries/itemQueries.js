@@ -95,9 +95,10 @@ module.exports.itemUpdate = async ({itemid=null, membershipid=null, itemName=nul
 } 
 
 module.exports.itemUpdateQtyPurchased = async ({itemid=null, itemQtyPurch=null}) => {
+    console.log(!itemQtyPurch)
     // Check that required fields are present
     if(!itemid) {return generateErrorJsonResponse('itemid was not provided')}
-    if(!itemQtyPurch) {return generateErrorJsonResponse('itemQtyPurch was not provided')}
+    if(!itemQtyPurch & itemQtyPurch !== 0) {return generateErrorJsonResponse('itemQtyPurch was not provided')}
 
     await pool.query(`
         UPDATE items 
