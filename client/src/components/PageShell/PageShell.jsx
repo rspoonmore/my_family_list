@@ -28,7 +28,7 @@ const PageShell = ({mainView=null}) => {
         )
     }
 
-    const renderView = () => {
+    function renderView() {
         if(isInitialized) {
             return (
                 <div id='shell-container'>
@@ -41,11 +41,11 @@ const PageShell = ({mainView=null}) => {
             )
         }
         else {
-            return <div className='p-10 text-center'>Loading application...</div>;
+            return (<div className='p-10 text-center'>Loading application...</div>);
         }
     }
     
-    return renderView;
+    renderView();
     
 }
 
