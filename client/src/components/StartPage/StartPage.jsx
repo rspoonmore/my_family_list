@@ -8,18 +8,18 @@ const StartPageView = () => {
     const [lists, setLists] = useState(null);
     const apiUrl = import.meta.env.VITE_API_URL;
 
-    async function loadLists() {
+    function loadLists() {
         if(!isInitialized) {return}
         if(currentUser && currentUser?.userid) {
             try {
-                const response = await fetch(`${apiUrl}/lists/?userid=${Number(currentUser?.userid)}`, {
+                const response = fetch(`${apiUrl}/lists/?userid=${Number(currentUser?.userid)}`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     credentials: 'include'
                 });
-                const res = await response.json();
+                const res = response.json();
                 if(res?.success) {
                     setLists(res?.lists || []);
                     return
