@@ -9,16 +9,21 @@ const AuthProvider = ({ children }) => {
 
     useEffect(() => {
         // 1. Check local storage
+        console.log('Checking for currentUser')
         const storedUser = localStorage.getItem('currentUser');
         if (storedUser) {
             try {
                 // 2. Load user if found
+                console.log('currentUser Found: ', JSON.parse(storedUser));
                 setCurrentUser(JSON.parse(storedUser));
             } catch (e) {
                 console.error("Failed to parse user from localStorage", e);
                 // Clear bad data just in case
                 localStorage.removeItem('currentUser');
             }
+        }
+        else {
+            console.log('No currentUser found.');
         }
         
         // 3. Mark as initialized AFTER checking storage
