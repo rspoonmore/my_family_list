@@ -22,7 +22,7 @@ const AuthProvider = ({ children }) => {
         clearCookiesIfNoCurrentUser(currentUser);
     }
 
-    useEffect(updateUser, [currentUser])
+    useEffect(updateUser, [])
 
     const authContextValue = {
         currentUser,
