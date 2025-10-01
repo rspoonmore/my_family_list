@@ -13,9 +13,9 @@ const PageShell = ({mainView=null}) => {
 
     const loadScreen = () => {
         if(!isInitialized) {return}
-        console.log('Loading Screen')
-        clearCookiesIfNoCurrentUser(currentUser);
-        clearCurrentUserIfNoCookie(setCurrentUser);
+        // clearCookiesIfNoCurrentUser(currentUser);
+        // clearCurrentUserIfNoCookie(setCurrentUser);
+        
         // setCurrentUserIfCookie(currentUser, setCurrentUser)
     }
 
@@ -32,7 +32,7 @@ const PageShell = ({mainView=null}) => {
 
     const pageShell = () => {
         if(!isInitialized) {return <div className='p-10 text-center'>Loading application...</div>;}
-        
+
         return (
             <div id='shell-container'>
                 <Header />

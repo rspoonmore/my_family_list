@@ -24,6 +24,7 @@ const AuthProvider = ({ children }) => {
         }
         else {
             console.log('No currentUser found.');
+            clearCookiesIfNoCurrentUser()
         }
         
         // 3. Mark as initialized AFTER checking storage
