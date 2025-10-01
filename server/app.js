@@ -14,6 +14,7 @@ app.use(express.json());
 // Setup API permissions 
 const allowedOrigins = [
   process.env.STATIC_SITE_URL,
+  `${process.env.STATIC_SITE_URL}/`,
   'http://localhost:3000',
   'http://localhost:5173'
 ];
