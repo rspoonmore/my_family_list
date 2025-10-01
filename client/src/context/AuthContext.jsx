@@ -29,12 +29,13 @@ const AuthProvider = ({ children }) => {
         }
         else {
             console.log('No currentUser found.');
-            clearCookiesIfNoCurrentUser()
+            clearCookiesIfNoCurrentUser(null)
         }
-        clearCurrentUserIfNoCookie(clearCurrentUser);
+        
         
         // 3. Mark as initialized AFTER checking storage
         setIsInitialized(true); 
+        clearCurrentUserIfNoCookie(clearCurrentUser);
     }, []);
 
     const authContextValue = {
