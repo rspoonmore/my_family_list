@@ -4,29 +4,31 @@ import { clearCookiesIfNoCurrentUser } from "../cookies/CookieHandler";
 const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
-    const [currentUser, setCurrentUser] = useState(() => {
-        // Load from LocalStorage
+    const [currentUser, setCurrentUser] = useState(null);
+    const [isInitialized, setIsInitialized] = useState(false);
+
+    useEffect(() => {
+        // 1. Check local storage
         const storedUser = localStorage.getItem('currentUser');
-        if(storedUser) { // currentUser found in local storage
-            console.log('currentUser loaded from local storage:', storedUser);
-            return JSON.parse(storedUser);
+        if (storedUser) {
+            try {
+                // 2. Load user if found
+                setCurrentUser(JSON.parse(storedUser));
+            } catch (e) {
+                console.error("Failed to parse user from localStorage", e);
+                // Clear bad data just in case
+                localStorage.removeItem('currentUser');
+            }
         }
-        // No currentUser
-        console.log('No currentUser found in local storage');
-        return null;
-    });
-
-    function updateUser() {
-        console.log('Saving currentUser to local storage: ', currentUser);
-        localStorage.setItem('currentUser', JSON.stringify(currentUser));
-        clearCookiesIfNoCurrentUser(currentUser);
-    }
-
-    useEffect(updateUser, [])
+        
+        // 3. Mark as initialized AFTER checking storage
+        setIsInitialized(true); 
+    }, []);
 
     const authContextValue = {
         currentUser,
-        setCurrentUser
+        setCurrentUser,
+        isInitialized
     }
 
     return (

@@ -14,7 +14,7 @@ const AdminPage = () => {
     const [listData, setListData] = useState(null); 
 
     const apiUrl = import.meta.env.VITE_API_URL;
-    const { currentUser } = useContext(AuthContext);
+    const { currentUser, isInitialized } = useContext(AuthContext);
 
     // Show section outcome
     const sectionOutcomes = ({sectionOutcome = null}) => {
@@ -125,6 +125,7 @@ const AdminPage = () => {
 
     // Generate View
     const generateView = () => {
+        if(!isInitialized) {return <div className='p-10 text-center'>Loading application...</div>;}
         if(!updateAllowed) {return <div className="p-8 text-lg text-red-600">You are not an admin, and therefore cannot access this page.</div>}
 
         const cardContainerClassName = 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6';
