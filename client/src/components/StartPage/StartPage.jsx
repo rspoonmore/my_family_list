@@ -4,12 +4,13 @@ import { AuthContext } from '../../context/AuthContext'
 import PageShell from '../PageShell/PageShell';
 
 const StartPageView = () => {
-    const { currentUser } = useContext(AuthContext);
+    const { currentUser, isInitialized } = useContext(AuthContext);
     const [lists, setLists] = useState(null);
     const apiUrl = import.meta.env.VITE_API_URL;
 
     async function loadLists() {
-        if(currentUser?.userid) {
+        if(!isInitialized) {return}
+        if(currentUser && currentUser?.userid) {
             try {
                 const response = await fetch(`${apiUrl}/lists/?userid=${Number(currentUser?.userid)}`, {
                     method: 'GET',
@@ -33,6 +34,7 @@ const StartPageView = () => {
     useEffect(loadLists, [currentUser])
 
     function welcomePage() {
+        if(!isInitialized) {return <div className='text-4xl'>Content Loading...</div>}
         return (
             <div className='max-w-3xl mx-auto p-8 bg-white shadow-xl rounded-lg mt-10 text-center'>
                 <h1 className='text-3xl font-bold text-gray-900 mb-6'>Hello!</h1>
@@ -44,6 +46,7 @@ const StartPageView = () => {
     }
 
     function loggedInPage() {
+        if(!isInitialized) {return <div className='text-4xl'>Content Loading...</div>}
         // Prepare and sort lists
         const futureEvents = [];
         const previousEvents = [];

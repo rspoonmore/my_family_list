@@ -130,7 +130,8 @@ const AdminPage = () => {
 
     // Generate View
     const generateView = () => {
-        if(!isInitialized) {return <div className='p-10 text-center'>Loading application...</div>;}
+        // if(!isInitialized) {return <div className='p-10 text-center'>Loading application...</div>;}
+        if(!isInitialized) {return <div className='text-4xl'>Content Loading...</div>}
         if(!updateAllowed) {return <div className="p-8 text-lg text-red-600">You are not an admin, and therefore cannot access this page.</div>}
 
         const cardContainerClassName = 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6';
