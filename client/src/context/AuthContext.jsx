@@ -13,11 +13,13 @@ const AuthProvider = ({ children }) => {
     }
 
     function loginUser(user) {
+        console.log('Saving user to local storage: ', JSON.stringify(user))
         localStorage.setItem('currentUser', JSON.stringify(user));
         setCurrentUser(user);
     }
 
     function logoutUser() {
+        console.log('Logging out user');
         localStorage.removeItem('currentUser');
         setCurrentUser(null);
     }
