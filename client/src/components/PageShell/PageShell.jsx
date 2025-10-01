@@ -45,7 +45,7 @@ const PageShell = ({mainView=null}) => {
         }
     }
     
-    renderView();
+    return renderView();
     
 }
 
