@@ -9,9 +9,10 @@ import { clearCurrentUserIfNoCookie, clearCookiesIfNoCurrentUser } from '../../c
 
 const PageShell = ({mainView=null}) => {
     
-    const { currentUser, setCurrentUser } = useContext(AuthContext);
+    const { currentUser, setCurrentUser, isInitialized } = useContext(AuthContext);
 
     const loadScreen = () => {
+        if(!isInitialized) {return}
         console.log('Loading Screen')
         clearCookiesIfNoCurrentUser(currentUser);
         clearCurrentUserIfNoCookie(setCurrentUser);
@@ -30,6 +31,8 @@ const PageShell = ({mainView=null}) => {
     }
 
     const pageShell = () => {
+        if(!isInitialized) {return <div className='p-10 text-center'>Loading application...</div>;}
+        
         return (
             <div id='shell-container'>
                 <Header />
