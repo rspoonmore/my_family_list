@@ -1,5 +1,5 @@
 exports.cookieOptions = {
-	maxAge: 1000 * 60 * 60 * 24 * 30,
+	expires: new Date(new Date().getTime() + 1000 * 60 * 60 * 24 * 30),
 	httpOnly: false,
 	secure: false,
 	// sameSite: 'none',
