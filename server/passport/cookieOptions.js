@@ -3,6 +3,6 @@ exports.cookieOptions = {
 	httpOnly: false,
 	secure: true,
 	// sameSite: 'none',
-	SameStie: "None"
+	SameSite: "None"
     // 'Access-Control-Allow-Credentials': true
 };
