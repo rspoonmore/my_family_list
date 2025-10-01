@@ -9,7 +9,7 @@ import ItemForm from '../Forms/ItemForm';
 const ListContent = () => {
     const { listData, loadStateData, memberCrosswalk } = useContext(ListContext);
     const { listid } = useParams();
-    const { currentUser } = useContext(AuthContext);
+    const { currentUser, isInitialized } = useContext(AuthContext);
     const [outcome, setOutcome] = useState(null);
     const [showPurchased, setShowPurchased] = useState(false);
     const [showMyPurchased, setShowMyPurchased] = useState(false);
@@ -22,31 +22,36 @@ const ListContent = () => {
         return <div className={className}>{outcome.message}</div>
     };
 
-    const loadList = async () => {
+    const loadPage = () => {
+        if(!isInitialized) {
+            console.log('User is not initialized yet');
+            return
+        }
+
         try {
-            const response = await fetch(`${apiUrl}/lists/${listid}?detailed=y`, {
+            fetch(`${apiUrl}/lists/${listid}?detailed=y`, {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'include'
-            });
-            const res = await response.json();
-            if(res?.success) {
-                loadStateData(res?.list || []);
-                return
-            }
-            return setOutcome(res);
+            })
+            .then(res => res.json())
+            .then(res => {
+                if(res?.success) {
+                    loadStateData(res?.list || [])
+                }
+                else{
+                    setOutcome(res);
+                }
+                setPageLoaded(true)
+            })
         } catch(error) {
             console.error('Error creating list:', error);
             return setOutcome({ success: false, message: 'Error Creating List' });
         }
+        
     };
 
-    const loadPage = () => {
-        loadList();
-        setPageLoaded(true);
-    };
-
-    useEffect(loadPage, [currentUser, listid]);
+    useEffect(loadPage, [isInitialized, currentUser, listid]);
 
     const renderShowMyCountButton = () => {
         if(!currentUser || !currentUser?.admin) return null;
@@ -81,6 +86,7 @@ const ListContent = () => {
     };
 
     const renderPage = () => {
+        if(!isInitialized) {return <div className='text-4xl'>Content Loading...</div>}
         if(!pageLoaded) {
             return (
                 <div className='p-5 m-5'>
