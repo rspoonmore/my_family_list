@@ -10,7 +10,7 @@ const Header = () => {
     const [showDropdown, setShowDropdown] = useState(false);
     const [showAccountSidebar, setShowAccountSidebar] = useState(false);
     const [showLoginForm, setShowLoginForm] = useState(false);
-    const { currentUser, setCurrentUser } = useContext(AuthContext);
+    const { currentUser, logoutUser } = useContext(AuthContext);
     const apiUrl = import.meta.env.VITE_API_URL;
 
     const linkClass = 'text-gray-200 hover:text-white transition-colors duration-200 px-3 py-2 rounded-md font-medium';
@@ -36,7 +36,7 @@ const Header = () => {
                 .then(res => {
                     // If logout was successful
                     if(res.success){
-                        setCurrentUser(null);
+                        logoutUser();
                         setShowLoginForm(false);
                     }
                     else {

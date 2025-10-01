@@ -7,7 +7,7 @@ const LoginForm = ({showLoginForm = false, setShowLoginForm = null}) => {
     const [formData, setFormData] = useState(blankForm);
     const apiUrl = import.meta.env.VITE_API_URL;
     const [outcome, setOutcome] = useState(null);
-    const { setCurrentUser } = useContext(AuthContext);
+    const { loginUser } = useContext(AuthContext);
 
     const inputClass = 'mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm';
     const primaryButtonClass = 'px-4 py-2 text-sm font-medium rounded-lg text-white bg-green-700 hover:bg-green-900 transition-colors shadow-md';
@@ -36,7 +36,7 @@ const LoginForm = ({showLoginForm = false, setShowLoginForm = null}) => {
             const data = {...formData};
             
             // post login
-            const response = await fetch(`${apiUrl}/users/login`, {
+            await fetch(`${apiUrl}/users/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -44,11 +44,11 @@ const LoginForm = ({showLoginForm = false, setShowLoginForm = null}) => {
                 credentials: 'include',
                 body: JSON.stringify(data)
             })
-            const res = await response.json()
+            .then(response => response.json())
             .then(res => {
                 // If login was successful
-                if(res.success){
-                    setCurrentUser(res.user);
+                if(res?.success && res?.user){
+                    loginUser(res?.user);
                     hideLogin();
                 }
                 // If login was not successful

@@ -12,6 +12,16 @@ const AuthProvider = ({ children }) => {
         setCurrentUser(null);
     }
 
+    function loginUser(user) {
+        localStorage.setItem('currentUser', JSON.stringify(user));
+        setCurrentUser(user);
+    }
+
+    function logoutUser() {
+        localStorage.removeItem('currentUser');
+        setCurrentUser(null);
+    }
+
     useEffect(() => {
         // 1. Check local storage
         console.log('Checking for currentUser')
@@ -40,7 +50,8 @@ const AuthProvider = ({ children }) => {
 
     const authContextValue = {
         currentUser,
-        setCurrentUser,
+        loginUser,
+        logoutUser,
         isInitialized
     }
 
