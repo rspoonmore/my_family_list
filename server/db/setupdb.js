@@ -55,7 +55,7 @@ async function main() {
   });
   await client.connect();
 
-//   await client.query(usersSetup);
+  await client.query(usersSetup);
   await client.query(membershipSetup);
   await client.query(listSetup);
   await client.query(itemsSetup);
