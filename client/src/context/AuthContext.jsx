@@ -7,11 +7,6 @@ const AuthProvider = ({ children }) => {
     const [currentUser, setCurrentUser] = useState(null);
     const [isInitialized, setIsInitialized] = useState(false);
 
-    function clearCurrentUser() {
-        localStorage.removeItem('currentUser');
-        setCurrentUser(null);
-    }
-
     function loginUser(user) {
         console.log('Saving user to local storage: ', JSON.stringify(user))
         localStorage.setItem('currentUser', JSON.stringify(user));
@@ -44,10 +39,9 @@ const AuthProvider = ({ children }) => {
             clearCookiesIfNoCurrentUser(null)
         }
         
-        
         // 3. Mark as initialized AFTER checking storage
         setIsInitialized(true); 
-        clearCurrentUserIfNoCookie(clearCurrentUser);
+        clearCurrentUserIfNoCookie(logoutUser);
     }, []);
 
     const authContextValue = {

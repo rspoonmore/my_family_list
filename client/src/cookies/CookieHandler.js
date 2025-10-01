@@ -23,6 +23,7 @@ function clearCurrentUserIfNoCookie(clearCurentUser) {
     };
 
     // No JWT cookie found
+    console.log('No JWT cookie found. Clearing current user.')
     clearCurentUser();
 }
 
