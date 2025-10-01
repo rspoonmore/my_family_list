@@ -47,6 +47,7 @@ const LoginForm = ({showLoginForm = false, setShowLoginForm = null}) => {
             .then(response => response.json())
             .then(res => {
                 // If login was successful
+                console.log('Logged in user: ', JSON.stringify(res?.user?.email || []))
                 if(res?.success && res?.user){
                     loginUser(res?.user);
                     hideLogin();
