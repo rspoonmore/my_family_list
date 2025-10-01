@@ -125,7 +125,7 @@ const UpdateUserView = () => {
                 // update successful
                 if(res.success) {
                     setOutcome(res);
-                    if(res.user && currentUser.userid === res.user.userid) {
+                    if(res.user && currentUser?.userid === res.user.userid) {
                         setCurrentUser(res.user);
                     }
                 }
@@ -147,7 +147,7 @@ const UpdateUserView = () => {
             return;
         }
         // Check that current user is allowed to make the update
-        if(!currentUser.admin && currentUser.userid !== Number(userid)) {
+        if(!currentUser?.admin && currentUser?.userid !== Number(userid)) {
             setUpdateAllowed(false);
             return;
         }

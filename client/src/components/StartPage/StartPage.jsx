@@ -9,27 +9,28 @@ const StartPageView = () => {
     const apiUrl = import.meta.env.VITE_API_URL;
 
     async function loadLists() {
-        if(!currentUser?.userid) {return null}
-        try {
-            const response = await fetch(`${apiUrl}/lists/?userid=${Number(currentUser?.userid)}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                credentials: 'include'
-            });
-            const res = await response.json();
-            if(res?.success) {
-                setLists(res?.lists || []);
-                return
-            }
+        if(currentUser?.userid) {
+            try {
+                const response = await fetch(`${apiUrl}/lists/?userid=${Number(currentUser?.userid)}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include'
+                });
+                const res = await response.json();
+                if(res?.success) {
+                    setLists(res?.lists || []);
+                    return
+                }
 
-        } catch(error) {
-            console.log(error)
+            } catch(error) {
+                console.log(error)
+            }
         }
     }
 
-    useEffect(() => {loadLists()}, [currentUser])
+    useEffect(loadLists, [currentUser])
 
     function welcomePage() {
         return (
