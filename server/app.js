@@ -19,7 +19,8 @@ const allowedOrigins = [
 ];
 
 const checkOrigin = (req, res, next) => {
-  const origin = req.headers.origin;
+  const origin = req?.headers?.origin || '';
+  console.log('Request incoming from origin: ', req?.headers?.origin || 'NONE')
 
   if (allowedOrigins.includes(origin)) {
     // If the origin is in our allowed list, let the request proceed.
