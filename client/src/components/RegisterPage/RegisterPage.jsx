@@ -2,7 +2,7 @@ import { useState } from 'react';
 import PageShell from '../PageShell/PageShell';
 
 const RegisterPageView = () => {
-    const blankFormData = {'email': '', 'firstName': '', 'lastName': '', 'password': '', adminCode: null}
+    const blankFormData = {'email': '', 'firstName': '', 'lastName': '', 'password': ''}
     const startingState = {
         'formData': blankFormData,
         'outcome': null,
@@ -38,7 +38,7 @@ const RegisterPageView = () => {
     const setShowAdminCode = (e) => {
         setState(prev => ({
             ...prev,
-            showAdminCode: e.checked === true
+            showAdminCode: e.target.checked === true
         }))
     }
 
@@ -50,7 +50,11 @@ const RegisterPageView = () => {
     }
 
     const clearInputs = () => {
-        setState(startingState);
+        setState(prev => ({
+            ...prev,
+            formData: blankFormData,
+            showAdminCode: false
+        }));
     }
 
     const adminCodeInput = () => {
