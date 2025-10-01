@@ -13,7 +13,7 @@ function clearCookiesIfNoCurrentUser(currentUser) {
     return;
 }
 
-function clearCurrentUserIfNoCookie(setCurrentUser) {
+function clearCurrentUserIfNoCookie(clearCurentUser) {
     const cookies = document.cookie.split(';');
     for(let i = 0;i < cookies.length; i++) {
         if(cookies[i].split('=')[0].trim() === 'jwt' || cookies[i].split(':')[0].trim() === 'jwt') {
@@ -23,7 +23,7 @@ function clearCurrentUserIfNoCookie(setCurrentUser) {
     };
 
     // No JWT cookie found
-    setCurrentUser(null);
+    clearCurentUser();
 }
 
 async function setCurrentUserIfCookie(currentUser, setCurrentUser) {

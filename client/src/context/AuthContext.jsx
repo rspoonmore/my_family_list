@@ -1,11 +1,16 @@
 import { createContext, useState, useEffect } from "react";
-import { clearCookiesIfNoCurrentUser } from "../cookies/CookieHandler";
+import { clearCurrentUserIfNoCookie, clearCookiesIfNoCurrentUser } from "../cookies/CookieHandler";
 
 const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
     const [currentUser, setCurrentUser] = useState(null);
     const [isInitialized, setIsInitialized] = useState(false);
+
+    function clearCurrentUser() {
+        localStorage.removeItem('currentUser');
+        setCurrentUser(null);
+    }
 
     useEffect(() => {
         // 1. Check local storage
@@ -26,6 +31,7 @@ const AuthProvider = ({ children }) => {
             console.log('No currentUser found.');
             clearCookiesIfNoCurrentUser()
         }
+        clearCurrentUserIfNoCookie(clearCurrentUser);
         
         // 3. Mark as initialized AFTER checking storage
         setIsInitialized(true); 
