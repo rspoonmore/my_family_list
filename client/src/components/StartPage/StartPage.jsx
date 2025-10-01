@@ -12,18 +12,19 @@ const StartPageView = () => {
         if(!isInitialized) {return}
         if(currentUser && currentUser?.userid) {
             try {
-                const response = fetch(`${apiUrl}/lists/?userid=${Number(currentUser?.userid)}`, {
+                fetch(`${apiUrl}/lists/?userid=${Number(currentUser?.userid)}`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     credentials: 'include'
+                })
+                .then(res => res.json())
+                .then(res => {
+                    if (res?.success) {
+                        setLists(res?.lists || []);
+                    }
                 });
-                const res = response.json();
-                if(res?.success) {
-                    setLists(res?.lists || []);
-                    return
-                }
 
             } catch(error) {
                 console.log(error)
