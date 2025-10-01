@@ -13,7 +13,7 @@ const ListUserView = ({user=null, membershipid=null, showPurchased=false, showMy
     const { updateForm, setFormType } = useContext(ListContext);
     const { currentUser } = useContext(AuthContext);
 
-    const isCurrentUserSetting = currentUser && Number(currentUser.userid) === Number(user.userid);
+    const isCurrentUserSetting = currentUser && Number(currentUser?.userid) === Number(user.userid);
     const showPurchasedSetting = ((isCurrentUserSetting & showMyPurchased) | (~isCurrentUserSetting & showPurchased));
 
     const renderAddItemButton = () => {

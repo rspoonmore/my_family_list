@@ -11,7 +11,7 @@ const StartPageView = () => {
     async function loadLists() {
         if(!currentUser?.userid) {return null}
         try {
-            const response = await fetch(`${apiUrl}/lists/?userid=${Number(currentUser.userid)}`, {
+            const response = await fetch(`${apiUrl}/lists/?userid=${Number(currentUser?.userid)}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'

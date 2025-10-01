@@ -49,7 +49,7 @@ const ListContent = () => {
     useEffect(loadPage, [currentUser, listid]);
 
     const renderShowMyCountButton = () => {
-        if(!currentUser || !currentUser.admin) return null;
+        if(!currentUser || !currentUser?.admin) return null;
         const changeShowMyPurchased = () => setShowMyPurchased(prev => !prev);
         const buttonDisplayText = showMyPurchased ? 'Hide My Counts' : 'Show My Counts';
         const className = 'bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-1 px-3 rounded border border-gray-300';

@@ -89,8 +89,8 @@ const Header = () => {
         return (
             <div className={`absolute right-0 top-full w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-20 ${visibilityClass}`}>
                 <div className='py-1' role='menu' aria-orientation='vertical'>
-                    <Link to={`/users/${currentUser.userid}/update`} state={{user: currentUser}} onClick={rightSideBarButtonHit} className={sidebarLinkClass} role='menuitem'>Update User</Link>
-                    <Link to={`/users/${currentUser.userid}/password`} onClick={rightSideBarButtonHit} className={sidebarLinkClass} role='menuitem'>Change Password</Link>
+                    <Link to={`/users/${currentUser?.userid}/update`} state={{user: currentUser}} onClick={rightSideBarButtonHit} className={sidebarLinkClass} role='menuitem'>Update User</Link>
+                    <Link to={`/users/${currentUser?.userid}/password`} onClick={rightSideBarButtonHit} className={sidebarLinkClass} role='menuitem'>Change Password</Link>
                 </div>
             </div>
         )

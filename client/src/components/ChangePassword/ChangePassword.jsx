@@ -87,7 +87,7 @@ const ChangePasswordView = () => {
     // Check permissions and update state
     useEffect(() => {
         console.log('Loading Form');
-        const isAllowed = currentUser && (currentUser?.admin || currentUser.userid === Number(userid));
+        const isAllowed = currentUser && (currentUser?.admin || currentUser?.userid === Number(userid));
         setState(prevState => ({ ...prevState, updateAllowed: isAllowed }));
     }, [currentUser, userid]);
 
