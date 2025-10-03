@@ -72,7 +72,12 @@ async function userLogin(req, res) {
         if(!match) {return res.json(generateErrorJsonResponse(`The password entered was incorrect.`))};
         // Add JWT cookie
         const jwtToken = jwt.sign({ userid: user.userid }, process.env.PASSPORT_SESSION_SECRET);
-        res.cookie('jwt', jwtToken, cookieOptions);
+        res.cookie('jwt', jwtToken, {
+            maxAge: 1000 * 60 * 60 * 24 * 30, // 30 days
+            httpOnly: true,
+            secure: true,
+            sameSite: 'none'
+        });
     }
     // Otherwise, assume loading from cookie
     else {
