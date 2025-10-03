@@ -72,7 +72,7 @@ async function userLogin(req, res) {
         const jwtToken = jwt.sign({ userid: user.userid }, process.env.PASSPORT_SESSION_SECRET);
         res.cookie('jwt', jwtToken, {
             maxAge: 1000 * 60 * 60 * 24 * 30, // 30 days
-            httpOnly: false,
+            httpOnly: true,
             secure: true,
             sameSite: 'none'
         });
@@ -97,11 +97,41 @@ async function userLogin(req, res) {
 }
 
 async function userLogout(req, res) {
-    res.clearCookie('jwt', cookieOptions);
+    res.clearCookie('jwt', {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'none'
+        }
+    );
     res.json({
         success: true,
         message: 'User logged out'
     })
+}
+
+async function userSession(req, res) {
+    try {
+        // Authenticator should read the httpOnly cookie automatically
+        const cookieSearchJson = authenticator.getUserIDFromCookie(req);
+        
+        if (!cookieSearchJson.success) {
+            // Cookie is missing, expired, or invalid
+            return res.json({ success: false, message: 'No valid session token.' });
+        }
+
+        // Load user data from the database using the ID from the validated cookie
+        const user = await db.userGetByID({ userid: Number(cookieSearchJson.userid) });
+        
+        if (!user) {
+            return res.json({ success: false, message: 'User not found.' });
+        }
+
+        // Return user data, confirming success
+        return res.json({ success: true, user: user });
+    } catch(error) {
+        console.log(error);
+        return res.json(generateErrorJsonResponse('Session check failed.'));
+    }
 }
 
 async function userCreate(req, res) {
@@ -295,5 +325,6 @@ module.exports = {
     userGetByID,
     userUpdate,
     userUpdatePassword,
-    userDelete
+    userDelete,
+    userSession
 }
