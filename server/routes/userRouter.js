@@ -2,7 +2,7 @@ const { Router } = require("express");
 const userController = require("../controllers/userController");
 const userRouter = Router();
 
-router.get('/session', userController.userSession);
+userRouter.get('/session', userController.userSession);
 userRouter.post('/login', userController.userLogin);
 userRouter.post('/logout', userController.userLogout);
 userRouter.post('/', userController.userCreate);
