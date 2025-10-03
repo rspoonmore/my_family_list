@@ -57,8 +57,6 @@ async function isAdminOrRequesting(req, targetUserID) {
 }
 
 async function userLogin(req, res) {
-    console.log('protocol: ', req.protocol)
-    console.log('secure: ', req.secure)
     const { email, password } = req.body;
     let user = null;
     // If email is provided, assume form submission
@@ -74,7 +72,7 @@ async function userLogin(req, res) {
         const jwtToken = jwt.sign({ userid: user.userid }, process.env.PASSPORT_SESSION_SECRET);
         res.cookie('jwt', jwtToken, {
             maxAge: 1000 * 60 * 60 * 24 * 30, // 30 days
-            httpOnly: true,
+            httpOnly: false,
             secure: true,
             sameSite: 'none'
         });
