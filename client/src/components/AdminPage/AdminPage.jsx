@@ -37,7 +37,6 @@ const AdminPage = () => {
         // Confirm delete
         if(window.confirm(`Are you sure you want to delete ${catKey}: ${id} from ${category}s?`)) {
             // call delete function
-            console.log(`Deleting ${catKey}: ${id} from ${category}s.`)
             await fetch(`${apiUrl}/${category}s/${id}`, {
                 method: 'DELETE',
                 credentials: 'include'
@@ -59,7 +58,6 @@ const AdminPage = () => {
     // Load User Data
     const loadUsers = () => {
         try {
-            console.log('Loading Users')
             fetch(`${apiUrl}/users`, {
                 method: 'GET',
                 headers: {
@@ -86,7 +84,6 @@ const AdminPage = () => {
     // Load List Data
     const loadLists = () => {
         try {
-            console.log('Loading Lists')
             fetch(`${apiUrl}/lists`, {
                 method: 'GET',
                 headers: {
@@ -112,7 +109,6 @@ const AdminPage = () => {
 
     // Check if user is an admin, if so, load data
     const loadPage = () => {
-        console.log('Loading Page');
 
         if(!isInitialized) {
             console.log('User is not initialized yet');
@@ -120,7 +116,7 @@ const AdminPage = () => {
         }
 
         // Check that current user is allowed to make the update
-        const isAdmin = currentUser?.admin;
+        const isAdmin = currentUser?.admin || false === true;
         setUpdateAllowed(isAdmin || false);
         if(!isAdmin) {return null}
 
@@ -130,7 +126,6 @@ const AdminPage = () => {
 
     // Generate View
     function generateView() {
-        // if(!isInitialized) {return <div className='p-10 text-center'>Loading application...</div>;}
         if(!isInitialized) {return <div className='text-4xl'>Content Loading...</div>}
         if(!updateAllowed) {return <div className="p-8 text-lg text-red-600">You are not an admin, and therefore cannot access this page.</div>}
 
@@ -177,7 +172,7 @@ const AdminPage = () => {
             function listCard(list) {
                 return (
                     <div key={`list-card-${list.listid}`} className={cardClassName}>
-                        <span className={titleClassName}>{list.listName || list.listname}</span>
+                        <Link to={`/lists/${Number(list?.listid)}`} className={titleClassName + ' underline'}>{list.listName || list.listname}</Link>
                         <div className={detailSectionClassName}>
                             <span className='block'>ID: {list.listid}</span>
                             <span className='block'>Event Date: {list.eventDate || list.eventdate}</span>
@@ -226,7 +221,7 @@ const AdminPage = () => {
     }
 
     // useEffect to load all data 
-    useEffect(() => {loadPage()}, [currentUser])
+    useEffect(loadPage, [currentUser])
 
     return <PageShell mainView={generateView} />;
 };

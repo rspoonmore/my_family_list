@@ -44,11 +44,11 @@ const ItemForm = () => {
             });
             const res = await response.json();
             if(!res?.success){
-                console.log(JSON.stringify(res))
                 return window.alert('API response not successful. Check console for details.')
             }
             
-            reactCleanerFunction({'item': formType === 'buy' ? formData : res.item});
+            const editedItem = res?.item ? {...res?.item, userid: formData.userid} : {...formData}
+            reactCleanerFunction({'item': editedItem});
             clearForm(); // Close the form on success
 
         } catch(error) {
@@ -63,17 +63,16 @@ const ItemForm = () => {
         const onClick = async () => {
             if(!window.confirm(`Are you sure you want to delete ${formData['itemName']}?`)) {return null}
             try {
-                const response = await fetch(`${apiUrl}/items/${String(formData?.itemid)}`, {
+                const response = await fetch(`${apiUrl}/items/${formData?.itemid}`, {
                     method: 'DELETE',
                     headers: { 'Content-Type': 'application/json' },
                     credentials: 'include',
                 });
                 const res = await response.json();
                 if(!res?.success) {
-                    console.log(JSON.stringify(res))
                     return window.alert('API response not successful. Check console for details.')
                 }
-                deleteItem(formData);
+                deleteItem({'itemid': Number(formData?.itemid)});
                 clearForm(); // Close the form on success
             } catch(error) {
                 console.log(error);
