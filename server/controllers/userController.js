@@ -57,6 +57,8 @@ async function isAdminOrRequesting(req, targetUserID) {
 }
 
 async function userLogin(req, res) {
+    console.log('protocol: ', req.protocol)
+    console.log('secure: ', req.secure)
     const { email, password } = req.body;
     let user = null;
     // If email is provided, assume form submission
