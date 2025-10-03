@@ -1,5 +1,5 @@
 import { createContext, useState, useEffect } from "react";
-import { clearCurrentUserIfNoCookie, clearCookiesIfNoCurrentUser } from "../cookies/CookieHandler";
+import { setCurrentUserIfCookie } from "../cookies/CookieHandler";
 
 const AuthContext = createContext();
 
@@ -36,12 +36,12 @@ const AuthProvider = ({ children }) => {
         }
         else {
             console.log('No currentUser found.');
-            clearCookiesIfNoCurrentUser(null)
         }
-        
+
         // 3. Mark as initialized AFTER checking storage
+        setCurrentUserIfCookie(currentUser, setCurrentUser)
         setIsInitialized(true); 
-        clearCurrentUserIfNoCookie(logoutUser);
+        // clearCurrentUserIfNoCookie(logoutUser);
     }, []);
 
     const authContextValue = {
