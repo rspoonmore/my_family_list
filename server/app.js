@@ -10,6 +10,7 @@ const itemRouter = require('./routes/itemRouter');
 const app = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.set('trust proxy', 1);  // Trust the proxy from Render's load balancer
 
 // Setup API permissions 
 const allowedOrigins = [
