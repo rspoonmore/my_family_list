@@ -8,25 +8,25 @@ const AuthProvider = ({ children }) => {
     const [isInitialized, setIsInitialized] = useState(false);
 
     function loginUser(user) {
-        console.log('Saving user to local storage: ', JSON.stringify(user))
+        // console.log('Saving user to local storage: ', JSON.stringify(user))
         localStorage.setItem('currentUser', JSON.stringify(user));
         setCurrentUser(user);
     }
 
     function logoutUser() {
-        console.log('Logging out user');
+        // console.log('Logging out user');
         localStorage.removeItem('currentUser');
         setCurrentUser(null);
     }
 
     useEffect(() => {
         // 1. Check local storage
-        console.log('Checking for currentUser')
+        // console.log('Checking for currentUser')
         const storedUser = localStorage.getItem('currentUser');
         if (storedUser) {
             try {
                 // 2. Load user if found
-                console.log('currentUser Found: ', JSON.parse(storedUser));
+                // console.log('currentUser Found: ', JSON.parse(storedUser));
                 setCurrentUser(JSON.parse(storedUser));
             } catch (e) {
                 console.error("Failed to parse user from localStorage", e);
@@ -34,9 +34,9 @@ const AuthProvider = ({ children }) => {
                 localStorage.removeItem('currentUser');
             }
         }
-        else {
-            console.log('No currentUser found.');
-        }
+        // else {
+        //     console.log('No currentUser found.');
+        // }
 
         // 3. Mark as initialized AFTER checking storage
         setCurrentUserIfCookie(currentUser, setCurrentUser)

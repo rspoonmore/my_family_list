@@ -104,21 +104,14 @@ const UpdateUserView = () => {
     const updateUser = async (e) => {
         e.preventDefault();
         try {
-            // Save form data in body of request
-            const data = {};
-            for(const key in state.formData) {
-                data[key] = state.formData[key];
-            }
-            
             // Put user
-            console.log(data);
             await fetch(`${apiUrl}/users/${Number(userid)}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 credentials: 'include',
-                body: JSON.stringify(data)
+                body: JSON.stringify({...state.formData})
             })
             .then(res => res.json())
             .then(res => {
@@ -159,7 +152,7 @@ const UpdateUserView = () => {
         
         // Load user data
         setUserLoaded(true);
-        console.log('Loading User From Location');
+        // console.log('Loading User From Location');
         return populateForm(location.state.user);
     }
 

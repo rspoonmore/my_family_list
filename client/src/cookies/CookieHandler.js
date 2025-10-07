@@ -41,7 +41,7 @@ async function setCurrentUserIfCookie(currentUser, setCurrentUser) {
         });
 
         const outcome = await response.json();
-        console.log('server session outcome: ', outcome);
+        // console.log('server session outcome: ', outcome);
         // If the server successfully authenticated via the cookie
         if(outcome.success && outcome.user){
             setCurrentUser(outcome.user);

@@ -67,7 +67,7 @@ const ListNewPage = () => {
     const getPotentialUsers = () => {
         if (!currentUser?.admin) {return []}
         try {
-            console.log('Loading Users');
+            // console.log('Loading Users');
             fetch(`${apiUrl}/users`, {
                 method: 'GET',
                 headers: {
@@ -106,7 +106,7 @@ const ListNewPage = () => {
 
     // Create the List API call from the form data
     const createList = async () => {
-        console.log('Creating new list')
+        // console.log('Creating new list')
         const listData = {...formData};
 
         try {
@@ -132,7 +132,7 @@ const ListNewPage = () => {
 
     // Create all Membership API calls from form data
     const addMemberships = async (listid) => {
-        console.log('Creating new memberships')
+        // console.log('Creating new memberships')
         const memberships = [...members];
         for(let i=0; i < memberships.length; i++) {
             const membershipCurr = memberships[i];
@@ -160,21 +160,20 @@ const ListNewPage = () => {
             }
         }
         
-        console.log('memberships added:', memberships);
-        setOutcome({'success': true, 'message': 'Your list has been created successfully!-'})
+        // console.log('memberships added:', memberships);
+        setOutcome({'success': true, 'message': 'Your list has been created successfully!'})
     }
 
     // Submit both API calls from form data
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log('Submitting Form');
+        // console.log('Submitting Form');
 
         const listResult = await createList();
 
         if(listResult?.success && listResult?.list?.listid) {
             const membersResult = await addMemberships(Number(listResult.list.listid));
-
-            console.log(JSON.stringify(membersResult));
+            // console.log(JSON.stringify(membersResult));
         } else {
             // Handle the case where list creation failed.
             setOutcome(listResult); // This assumes setOutcome is available.

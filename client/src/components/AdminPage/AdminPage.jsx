@@ -111,14 +111,16 @@ const AdminPage = () => {
     const loadPage = () => {
 
         if(!isInitialized) {
-            console.log('User is not initialized yet');
+            // console.log('User is not initialized yet');
+            setUpdateAllowed(false);
             return
         }
 
         // Check that current user is allowed to make the update
-        const isAdmin = currentUser?.admin || false === true;
+        // console.log('User is initialized')
+        const isAdmin = (currentUser?.admin || false) === true;
         setUpdateAllowed(isAdmin || false);
-        if(!isAdmin) {return null}
+        if(!isAdmin) {return}
 
         loadUsers();
         loadLists();

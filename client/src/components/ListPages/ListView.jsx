@@ -24,7 +24,8 @@ const ListContent = () => {
 
     const loadPage = () => {
         if(!isInitialized) {
-            console.log('User is not initialized yet');
+            // console.log('User is not initialized yet');
+            setPageLoaded(false);
             return
         }
 
@@ -46,7 +47,8 @@ const ListContent = () => {
             })
         } catch(error) {
             console.error('Error creating list:', error);
-            return setOutcome({ success: false, message: 'Error Creating List' });
+            setOutcome({ success: false, message: 'Error Creating List' });
+            return
         }
         
     };

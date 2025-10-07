@@ -68,7 +68,7 @@ const ListUpdatePage = () => {
     const getPotentialUsers = () => {
         if (!currentUser?.admin) {return []}
         try {
-            console.log('Loading Users');
+            // console.log('Loading Users');
             fetch(`${apiUrl}/users`, {
                 method: 'GET',
                 headers: {
@@ -98,7 +98,7 @@ const ListUpdatePage = () => {
     // Load the List from API call
     const loadList = async () => {
         if (!currentUser?.admin) {return null}
-        console.log('Loading list')
+        // console.log('Loading list')
         try {
             const response = await fetch(`${apiUrl}/lists/${listid}?detailed=y`, {
                 method: 'GET',
@@ -143,9 +143,7 @@ const ListUpdatePage = () => {
 
     // Create the List API call from the form data
     const editList = async () => {
-        console.log('Editing list')
-        const listData = {...formData};
-
+        // console.log('Editing list')
         try {
             const response = await fetch(`${apiUrl}/lists/${listid}`, {
                 method: 'PUT',
@@ -153,7 +151,7 @@ const ListUpdatePage = () => {
                     'Content-Type': 'application/json'
                 },
                 credentials: 'include',
-                body: JSON.stringify(listData)
+                body: JSON.stringify({...formData})
             });
 
             const res = await response.json();
@@ -169,7 +167,7 @@ const ListUpdatePage = () => {
 
     // Create a Membership from toggled user
     const addMembership = async (userid) => {
-        console.log('Creating new membership for userid: ', userid)
+        // console.log('Creating new membership for userid: ', userid)
         const membershipData = {'listid': Number(listid), 'userid': Number(userid)};
         try {
             const response = await fetch(`${apiUrl}/memberships`, {
@@ -196,7 +194,7 @@ const ListUpdatePage = () => {
 
     // Delete a Membership
     const deleteMembership = async (membershipid) => {
-        console.log('Deleting membership for userid: ', membershipid)
+        // console.log('Deleting membership for userid: ', membershipid)
         try {
             const response = await fetch(`${apiUrl}/memberships/${membershipid}`, {
                 method: 'DELETE',

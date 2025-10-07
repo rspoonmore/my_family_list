@@ -76,27 +76,19 @@ const RegisterPageView = () => {
 
     const register = async (e) => {
         e.preventDefault();
-        console.log('Registering User');
+        // console.log('Registering User');
         try {
-            // Save form data in body of request
-            const data = new FormData();
-            for(const key in state.formData) {
-                data[key] = state.formData[key];
-            }
-            
             // post register
-            console.log(data);
             await fetch(`${apiUrl}/users`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 credentials: 'include',
-                body: JSON.stringify(data)
+                body: JSON.stringify({...state.formData})
             })
             .then(res => res.json())
             .then(res => {
-                console.log(res)
                 // register successful
                 if(res.success) {
                     setOutcome(res);
