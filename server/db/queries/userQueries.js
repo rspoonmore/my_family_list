@@ -4,6 +4,7 @@ async function userGetByID({userid = null}) {
     if(!userid) {return null}
     const { rows } = await pool.query(`SELECT * FROM users WHERE userid = $1;`, [userid]);
     if(!rows) {return null}
+    console.log(rows[0]);
     return rows.length > 0 ? rows[0] : null;
 }
 

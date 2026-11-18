@@ -52,8 +52,6 @@ async function isAdminOrRequesting(req, targetUserID) {
     if(Number(reqUser?.userid) === Number(targetUserID)) {
         return {'reqAllowed': true, 'requestType': 'target'};
     }
-
-    console.log(reqUser);
     return {'reqAllowed': false, 'requestType': 'other'};
 }
 
