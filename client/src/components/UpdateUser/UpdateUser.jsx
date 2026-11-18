@@ -19,7 +19,7 @@ const UpdateUserView = () => {
     const { userid } = useParams();
     const [state, setState] = useState(startingState);
     const apiUrl = import.meta.env.VITE_API_URL;
-    const { currentUser, setCurrentUser } = useContext(AuthContext)
+    const { currentUser } = useContext(AuthContext)
 
     // Show outcome of PUT
     const updateErrors = () => {
@@ -118,9 +118,9 @@ const UpdateUserView = () => {
                 // update successful
                 if(res.success) {
                     setOutcome(res);
-                    if(res.user && currentUser?.userid === res.user.userid) {
-                        setCurrentUser(res.user);
-                    }
+                    // if(res.user && currentUser?.userid === res.user.userid) {
+                    //     setCurrentUser(res.user);
+                    // }
                 }
                 // update was not successful
                 else {

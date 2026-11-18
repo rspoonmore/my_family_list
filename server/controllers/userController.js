@@ -53,6 +53,7 @@ async function isAdminOrRequesting(req, targetUserID) {
         return {'reqAllowed': true, 'requestType': 'target'};
     }
 
+    console.log(reqUser);
     return {'reqAllowed': false, 'requestType': 'other'};
 }
 
@@ -89,6 +90,7 @@ async function userLogin(req, res) {
         user = await db.userGetByID({userid: cookieSearchJson.userid});
     }
     if(!user) {return res.json(generateErrorJsonResponse(`User was not found.`))}
+    console.log(user?.admin);
     return res.json({
         success: true,
         message: 'User logged in.',

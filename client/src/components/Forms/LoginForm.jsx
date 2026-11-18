@@ -34,7 +34,6 @@ const LoginForm = ({showLoginForm = false, setShowLoginForm = null}) => {
         try {
             // Save form data in body of request
             const data = {...formData};
-            
             // post login
             await fetch(`${apiUrl}/users/login`, {
                 method: 'POST',
