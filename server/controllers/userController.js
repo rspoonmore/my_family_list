@@ -41,8 +41,11 @@ async function isAdminOrRequesting(req, targetUserID) {
     if(!cookieSearchJson.userid) {return generateErrorJsonResponse(`User was not found from cookie`)};
     // Load user
     reqUser = await db.userGetByID({userid: Number(cookieSearchJson.userid)});
+
     if(!reqUser) {return generateErrorJsonResponse(`User was not found.`)};
 
+    console.log('admin: ', reqUser?.admin);
+    console.log('userID: ', reqUser?.userid);
     // If admin return True
     if(reqUser?.admin) {
         return {'reqAllowed': true, 'requestType': 'admin'};
