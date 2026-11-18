@@ -91,7 +91,7 @@ async function userLogin(req, res) {
         user = await db.userGetByID({userid: cookieSearchJson.userid});
     }
     if(!user) {return res.json(generateErrorJsonResponse(`User was not found.`))}
-    console.log(user?.admin);
+
     return res.json({
         success: true,
         message: 'User logged in.',
@@ -265,6 +265,7 @@ async function userUpdatePassword(req, res) {
 
         // Confirm that requesting user is the same or an admin
         const {reqAllowed, requestType} = await isAdminOrRequesting(req, existingUser?.userid);
+        console.log(reqAllowed, requestType);
         if(!reqAllowed) {return res.json(generateErrorJsonResponse("The user requesting the update is not an admin and does not match the user being updated"))}
 
         // Check that passwords match if not an Admin
